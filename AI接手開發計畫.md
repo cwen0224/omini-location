@@ -82,6 +82,18 @@ App 安裝一次後，後續更新以兩種層次處理：
 - 內容更新：地圖、文案、展點、導覽、Beacon 設定，由伺服器下載
 - 安裝包更新：原生功能有重大變更時才重新發布 APK
 
+### 4.4 更新包策略
+建議採雙層更新：
+- App Update Manifest
+  - 提供最新 `app_version`、`build_number`、`apk_url`、`release_notes`、`force_update`
+- Content Package Manifest
+  - 提供 `content_version`、`package_url`、`checksum`、`package_type`
+
+接手 AI 應避免把所有更新都做成重裝 APK。
+原則如下：
+- 原生能力或插件變更：重發 APK
+- 展點、地圖、Beacon、文案、遠端設定：走內容更新包
+
 ## 5. 感測器能力準備計畫
 ### 5.1 GPS
 目標：
@@ -222,6 +234,23 @@ App 安裝一次後，後續更新以兩種層次處理：
 - 地圖/展點/Beacon 設定 JSON 更新
 - 本地快取與版本比對
 
+### Phase 7：App 更新系統
+目標：
+- 使用者不需每次手動回下載頁找 APK
+- App 可自動檢查是否有新版安裝包或內容更新包
+
+交付物：
+- Version manifest model
+- 啟動時版本檢查
+- 更新提示 UI
+- APK 下載入口
+- 內容更新包下載、checksum 驗證與套用
+
+驗收標準：
+- App 啟動時可顯示是否有新版 APK
+- App 可顯示目前安裝版本與遠端最新版本
+- App 可套用內容更新包而不重裝 APK
+
 ## 7. AI 接手後的第一批工作
 後續 AI 請優先執行以下事項，不要一開始就做複雜融合演算法：
 
@@ -235,6 +264,8 @@ App 安裝一次後，後續更新以兩種層次處理：
 8. 完成 Android 權限處理
 9. 建立統一的 SensorReading / AppPermission / DeviceCapability 模型
 10. 在真機上做基本功能驗證
+11. 建立 App 更新 manifest 與內容更新 manifest 模型
+12. 在 App 內實作版本檢查與更新提示流程
 
 ## 8. 建議資料夾結構
 ```text
@@ -282,6 +313,8 @@ app/
 - 所有資料流都要帶時間戳
 - 所有定位估計都要有 confidence 欄位
 - 所有遠端內容要可版本控管
+- 所有更新包都要帶版本號與 checksum
+- 版本檢查失敗時不得阻塞 App 基本啟動
 
 ## 11. 不要先做的事
 後續 AI 在第一輪不應優先投入以下項目：
@@ -340,4 +373,6 @@ app/
 2. 先完成 Android 安裝與啟動
 3. 做感測器測試中心頁
 4. 在真機驗證 GPS / IMU / BLE / Camera
-5. 驗證後再進入定位融合與地圖功能
+5. 建立 App 更新 manifest / 內容更新 manifest
+6. 完成版本檢查與更新提示
+7. 驗證後再進入定位融合與地圖功能
