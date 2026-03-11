@@ -5,6 +5,8 @@ import 'dart:ui';
 import 'package:flutter/foundation.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
+import 'beacon_registry.dart';
+
 class ErrorReporter {
   ErrorReporter._();
 
@@ -70,6 +72,7 @@ class ErrorReporter {
 
   static Future<String> buildReport() async {
     final packageInfo = await PackageInfo.fromPlatform();
+    await BeaconRegistry.instance.load();
     final buffer = StringBuffer()
       ..writeln('人權博物館APP 問題回報')
       ..writeln('時間: ${DateTime.now().toIso8601String()}')
@@ -81,6 +84,9 @@ class ErrorReporter {
       ..writeln('')
       ..writeln('最近事件:')
       ..writeln(_formatEntries(ReportLevel.info))
+      ..writeln('')
+      ..writeln('已保存 Beacon:')
+      ..writeln(_formatSavedBeacons())
       ..writeln('')
       ..writeln('最近錯誤:');
 
@@ -102,6 +108,27 @@ class ErrorReporter {
       );
       if (entry.stackTrace != null && entry.stackTrace!.isNotEmpty) {
         buffer.writeln(entry.stackTrace);
+      }
+    }
+    return buffer.toString().trimRight();
+  }
+
+  static String _formatSavedBeacons() {
+    final beacons = BeaconRegistry.instance.beacons;
+    if (beacons.isEmpty) {
+      return '- 無紀錄';
+    }
+
+    final buffer = StringBuffer();
+    for (final beacon in beacons) {
+      buffer.writeln(
+        '- ${beacon.displayName} | key=${beacon.beaconKey} | id=${beacon.remoteId} | rssi=${beacon.lastRssi}',
+      );
+      if (beacon.manufacturerHex.isNotEmpty) {
+        buffer.writeln('  manufacturer=${beacon.manufacturerHex}');
+      }
+      if (beacon.serviceDataHex.isNotEmpty) {
+        buffer.writeln('  serviceData=${beacon.serviceDataHex}');
       }
     }
     return buffer.toString().trimRight();
