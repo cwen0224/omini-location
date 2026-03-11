@@ -85,7 +85,10 @@ class _ReportIssuePageState extends State<ReportIssuePage> {
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
-                  color: Colors.white,
+                  color: Theme.of(context).colorScheme.surface,
+                  border: Border.all(
+                    color: Theme.of(context).dividerColor,
+                  ),
                 ),
                 child: SingleChildScrollView(
                   child: SelectableText(_report),
