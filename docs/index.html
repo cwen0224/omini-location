@@ -6,13 +6,16 @@
     <title>人權博物館APP 下載</title>
     <style>
       :root {
-        --bg: #f5efe4;
-        --ink: #203128;
-        --muted: #5b6b62;
-        --card: rgba(255, 255, 255, 0.78);
-        --line: rgba(32, 49, 40, 0.12);
-        --accent: #315648;
-        --accent-2: #c98c3d;
+        --bg: #0f1419;
+        --bg-2: #182028;
+        --card: rgba(24, 32, 40, 0.86);
+        --ink: #eef3f7;
+        --muted: #9fb0bf;
+        --line: rgba(255, 255, 255, 0.1);
+        --accent: #7dd3a7;
+        --accent-2: #5fb6ff;
+        --warn: #ffb86c;
+        --danger: #ff8e8e;
       }
 
       * {
@@ -24,9 +27,9 @@
         font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
         color: var(--ink);
         background:
-          radial-gradient(circle at top left, rgba(201, 140, 61, 0.22), transparent 24%),
-          radial-gradient(circle at bottom right, rgba(49, 86, 72, 0.18), transparent 22%),
-          linear-gradient(180deg, #f8f3ea 0%, var(--bg) 100%);
+          radial-gradient(circle at top left, rgba(95, 182, 255, 0.16), transparent 28%),
+          radial-gradient(circle at bottom right, rgba(125, 211, 167, 0.18), transparent 24%),
+          linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%);
       }
 
       .page {
@@ -37,35 +40,48 @@
       }
 
       .card {
-        width: min(720px, 100%);
-        background: var(--card);
-        backdrop-filter: blur(12px);
-        border: 1px solid var(--line);
-        border-radius: 28px;
+        width: min(760px, 100%);
         padding: 28px;
-        box-shadow: 0 20px 80px rgba(35, 44, 39, 0.1);
+        border-radius: 28px;
+        background: var(--card);
+        border: 1px solid var(--line);
+        box-shadow: 0 30px 100px rgba(0, 0, 0, 0.35);
+        backdrop-filter: blur(10px);
       }
 
       .eyebrow {
         display: inline-block;
         padding: 8px 12px;
         border-radius: 999px;
-        background: rgba(49, 86, 72, 0.1);
+        background: rgba(125, 211, 167, 0.14);
         color: var(--accent);
-        font-size: 14px;
+        font-size: 13px;
         font-weight: 700;
+        letter-spacing: 0.04em;
       }
 
       h1 {
         margin: 16px 0 12px;
-        font-size: clamp(32px, 6vw, 52px);
-        line-height: 1.05;
+        font-size: clamp(34px, 6vw, 56px);
+        line-height: 1.02;
       }
 
       p {
         margin: 0;
         color: var(--muted);
-        line-height: 1.7;
+        line-height: 1.75;
+      }
+
+      .status {
+        margin-top: 20px;
+        padding: 16px 18px;
+        border-radius: 18px;
+        border: 1px solid rgba(255, 184, 108, 0.24);
+        background: rgba(255, 184, 108, 0.08);
+      }
+
+      .status strong {
+        color: var(--warn);
       }
 
       .actions {
@@ -82,47 +98,55 @@
         min-height: 52px;
         padding: 0 20px;
         border-radius: 16px;
-        text-decoration: none;
         font-weight: 700;
+        text-decoration: none;
       }
 
       .button-primary {
-        color: #fff;
-        background: linear-gradient(135deg, var(--accent) 0%, #406d5c 100%);
+        color: #08110d;
+        background: linear-gradient(135deg, var(--accent) 0%, #a2f0ca 100%);
       }
 
       .button-secondary {
         color: var(--ink);
+        background: rgba(255, 255, 255, 0.05);
         border: 1px solid var(--line);
-        background: rgba(255, 255, 255, 0.66);
       }
 
-      .meta {
+      .button-disabled {
+        color: #5d6b77;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px dashed rgba(255, 255, 255, 0.12);
+        cursor: not-allowed;
+        pointer-events: none;
+      }
+
+      .grid {
         display: grid;
         gap: 12px;
         margin-top: 24px;
       }
 
-      .meta-item {
+      .item {
         padding: 16px 18px;
         border-radius: 18px;
-        background: rgba(255, 255, 255, 0.72);
         border: 1px solid var(--line);
+        background: rgba(255, 255, 255, 0.04);
       }
 
-      .meta-label {
+      .label {
         display: block;
         margin-bottom: 6px;
-        color: var(--muted);
         font-size: 13px;
+        color: var(--muted);
       }
 
       .notice {
         margin-top: 24px;
         padding: 18px;
         border-radius: 18px;
-        background: rgba(201, 140, 61, 0.12);
-        border: 1px solid rgba(201, 140, 61, 0.25);
+        border: 1px solid rgba(95, 182, 255, 0.2);
+        background: rgba(95, 182, 255, 0.08);
       }
 
       ol {
@@ -131,48 +155,56 @@
         color: var(--muted);
         line-height: 1.7;
       }
+
+      code {
+        color: var(--accent-2);
+      }
     </style>
   </head>
   <body>
     <main class="page">
       <section class="card">
-        <span class="eyebrow">Android 測試版下載</span>
+        <span class="eyebrow">Android 測試版入口</span>
         <h1>人權博物館APP</h1>
         <p>
-          掃描 QR Code 後可由此頁下載最新版 APK。首次安裝完成後，後續即可直接從手機開啟測試。
+          掃描 QR Code 後可由此頁取得 Android 測試版。頁面本身已上線，但 APK 檔案尚未上傳，所以現在不提供可點擊下載。
         </p>
 
-        <div class="actions">
-          <a class="button button-primary" href="./downloads/app-release.apk">下載 APK</a>
-          <a class="button button-secondary" href="#install">安裝說明</a>
+        <div class="status">
+          <strong>目前狀態：</strong>
+          GitHub Pages 已正常部署，但 <code>docs/downloads/app-release.apk</code> 尚不存在，因此先停用下載按鈕，避免再出現 404。
         </div>
 
-        <div class="meta">
-          <div class="meta-item">
-            <span class="meta-label">目前版本</span>
-            <strong>v0.1.0</strong>
+        <div class="actions">
+          <span class="button button-disabled">APK 尚未上傳</span>
+          <a class="button button-secondary" href="#install">查看安裝方式</a>
+        </div>
+
+        <div class="grid">
+          <div class="item">
+            <span class="label">頁面狀態</span>
+            <strong>已上線</strong>
           </div>
-          <div class="meta-item">
-            <span class="meta-label">更新策略</span>
-            <strong>首次下載 APK，之後以 App 內動態內容更新為主</strong>
+          <div class="item">
+            <span class="label">APK 狀態</span>
+            <strong style="color: var(--danger)">尚未產出 / 尚未上傳</strong>
           </div>
-          <div class="meta-item">
-            <span class="meta-label">支援平台</span>
-            <strong>Android</strong>
+          <div class="item">
+            <span class="label">預定下載路徑</span>
+            <strong>/omini-location/downloads/app-release.apk</strong>
           </div>
         </div>
 
         <div class="notice" id="install">
-          <strong>安裝方式</strong>
+          <strong>之後正式下載流程</strong>
           <ol>
-            <li>點擊「下載 APK」下載安裝檔。</li>
-            <li>若手機提示安全性限制，允許此來源安裝。</li>
-            <li>安裝完成後開啟「人權博物館APP」。</li>
-            <li>首次執行時允許定位、相機與藍牙權限。</li>
+            <li>先在本機成功建出 APK。</li>
+            <li>把 APK 放到 <code>docs/downloads/app-release.apk</code>。</li>
+            <li>重新 push 到 GitHub。</li>
+            <li>重新整理本頁後，下載按鈕就能啟用。</li>
           </ol>
         </div>
       </section>
     </main>
   </body>
   </html>
-
