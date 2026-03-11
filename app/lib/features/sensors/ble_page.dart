@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import '../../core/error_reporter.dart';
 import 'sensor_models.dart';
 import 'sensor_page_scaffold.dart';
 
@@ -63,6 +64,7 @@ class _BlePageState extends State<BlePage> {
       setState(() {
         _error = 'BLE 權限不足，請允許藍牙與定位權限';
       });
+      ErrorReporter.record(source: 'BLE', message: _error);
       return;
     }
 
@@ -84,6 +86,7 @@ class _BlePageState extends State<BlePage> {
       setState(() {
         _error = error.toString();
       });
+      ErrorReporter.record(source: 'BLE', message: _error);
     } finally {
       if (!mounted) return;
       setState(() {
@@ -169,4 +172,3 @@ class _BlePageState extends State<BlePage> {
     );
   }
 }
-

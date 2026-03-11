@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import '../../core/error_reporter.dart';
 import 'sensor_models.dart';
 import 'sensor_page_scaffold.dart';
 
@@ -63,6 +64,7 @@ class _GpsPageState extends State<GpsPage> {
         _error = '請先開啟手機定位服務';
         _loading = false;
       });
+      ErrorReporter.record(source: 'GPS', message: _error);
       return;
     }
 
@@ -73,6 +75,7 @@ class _GpsPageState extends State<GpsPage> {
         _error = '定位權限未授權';
         _loading = false;
       });
+      ErrorReporter.record(source: 'GPS', message: _error);
       return;
     }
 
@@ -98,6 +101,7 @@ class _GpsPageState extends State<GpsPage> {
           _error = error.toString();
           _loading = false;
         });
+        ErrorReporter.record(source: 'GPS', message: _error);
       },
     );
   }
@@ -156,4 +160,3 @@ class _GpsPageState extends State<GpsPage> {
     );
   }
 }
-

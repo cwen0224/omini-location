@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../sensors/sensor_hub_page.dart';
+import '../support/report_issue_page.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -40,6 +41,21 @@ class HomePage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 12),
+            Card(
+              child: ListTile(
+                title: const Text('回報問題'),
+                subtitle: const Text('複製除錯資訊，快速貼給 AI 排查'),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (_) => const ReportIssuePage(),
+                    ),
+                  );
+                },
+              ),
+            ),
+            const SizedBox(height: 12),
             const Card(
               child: ListTile(
                 title: Text('開發狀態'),
@@ -52,4 +68,3 @@ class HomePage extends StatelessWidget {
     );
   }
 }
-

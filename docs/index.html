@@ -186,16 +186,16 @@
         <span class="eyebrow">Android 測試版入口</span>
         <h1>人權博物館APP</h1>
         <p>
-          掃描 QR Code 後可由此頁取得 Android 測試版。頁面本身已上線，但 APK 檔案尚未上傳，所以現在不提供可點擊下載。
+          掃描 QR Code 後可由此頁取得 Android 測試版。現在已提供 APK，可直接從此頁下載安裝。
         </p>
 
         <div class="status">
           <strong>目前狀態：</strong>
-          GitHub Pages 已正常部署，但 <code>docs/downloads/app-release.apk</code> 尚不存在，因此先停用下載按鈕，避免再出現 404。
+          GitHub Pages 已正常部署，<code>docs/downloads/app-release.apk</code> 已上傳，可直接下載。
         </div>
 
         <div class="actions">
-          <span class="button button-disabled">APK 尚未上傳</span>
+          <a class="button button-primary" href="./downloads/app-release.apk">下載 APK</a>
           <a class="button button-secondary" href="#install">查看安裝方式</a>
         </div>
 
@@ -214,7 +214,7 @@
           </div>
           <div class="item">
             <span class="label">APK 狀態</span>
-            <strong style="color: var(--danger)">尚未產出 / 尚未上傳</strong>
+            <strong style="color: var(--accent)">已上傳，可下載</strong>
           </div>
           <div class="item">
             <span class="label">預定下載路徑</span>
@@ -223,12 +223,12 @@
         </div>
 
         <div class="notice" id="install">
-          <strong>之後正式下載流程</strong>
+          <strong>安裝方式</strong>
           <ol>
-            <li>先在本機成功建出 APK。</li>
-            <li>把 APK 放到 <code>docs/downloads/app-release.apk</code>。</li>
-            <li>重新 push 到 GitHub。</li>
-            <li>重新整理本頁後，下載按鈕就能啟用。</li>
+            <li>點擊「下載 APK」下載安裝檔。</li>
+            <li>若手機提示安全性限制，允許此來源安裝。</li>
+            <li>安裝完成後開啟「人權博物館APP」。</li>
+            <li>首次執行時允許定位、相機與藍牙權限。</li>
           </ol>
         </div>
       </section>

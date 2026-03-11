@@ -2,6 +2,7 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import '../../core/error_reporter.dart';
 import 'sensor_models.dart';
 import 'sensor_page_scaffold.dart';
 
@@ -47,6 +48,7 @@ class _CameraPageState extends State<CameraPage> {
         _error = '相機權限未授權';
         _loading = false;
       });
+      ErrorReporter.record(source: 'Camera', message: _error);
       return;
     }
 
@@ -57,6 +59,7 @@ class _CameraPageState extends State<CameraPage> {
           _error = '找不到可用相機';
           _loading = false;
         });
+        ErrorReporter.record(source: 'Camera', message: _error);
         return;
       }
 
@@ -82,6 +85,7 @@ class _CameraPageState extends State<CameraPage> {
         _error = error.toString();
         _loading = false;
       });
+      ErrorReporter.record(source: 'Camera', message: _error);
     }
   }
 
