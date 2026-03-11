@@ -127,6 +127,25 @@
         margin-top: 24px;
       }
 
+      .qr {
+        display: grid;
+        gap: 16px;
+        justify-items: center;
+        margin-top: 24px;
+        padding: 20px;
+        border-radius: 22px;
+        border: 1px solid var(--line);
+        background: rgba(255, 255, 255, 0.04);
+      }
+
+      .qr img {
+        width: 220px;
+        max-width: 100%;
+        border-radius: 18px;
+        background: white;
+        padding: 12px;
+      }
+
       .item {
         padding: 16px 18px;
         border-radius: 18px;
@@ -178,6 +197,14 @@
         <div class="actions">
           <span class="button button-disabled">APK 尚未上傳</span>
           <a class="button button-secondary" href="#install">查看安裝方式</a>
+        </div>
+
+        <div class="qr">
+          <img
+            src="https://api.qrserver.com/v1/create-qr-code/?size=320x320&data=https%3A%2F%2Fcwen0224.github.io%2Fomini-location%2F"
+            alt="人權博物館APP 下載頁 QR Code"
+          />
+          <p>掃描此 QR Code，可直接開啟本下載頁。</p>
         </div>
 
         <div class="grid">
