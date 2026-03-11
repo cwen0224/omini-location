@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>人權博物館APP 下載</title>
+    <style>
+      :root {
+        --bg: #f5efe4;
+        --ink: #203128;
+        --muted: #5b6b62;
+        --card: rgba(255, 255, 255, 0.78);
+        --line: rgba(32, 49, 40, 0.12);
+        --accent: #315648;
+        --accent-2: #c98c3d;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+        color: var(--ink);
+        background:
+          radial-gradient(circle at top left, rgba(201, 140, 61, 0.22), transparent 24%),
+          radial-gradient(circle at bottom right, rgba(49, 86, 72, 0.18), transparent 22%),
+          linear-gradient(180deg, #f8f3ea 0%, var(--bg) 100%);
+      }
+
+      .page {
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        padding: 24px;
+      }
+
+      .card {
+        width: min(720px, 100%);
+        background: var(--card);
+        backdrop-filter: blur(12px);
+        border: 1px solid var(--line);
+        border-radius: 28px;
+        padding: 28px;
+        box-shadow: 0 20px 80px rgba(35, 44, 39, 0.1);
+      }
+
+      .eyebrow {
+        display: inline-block;
+        padding: 8px 12px;
+        border-radius: 999px;
+        background: rgba(49, 86, 72, 0.1);
+        color: var(--accent);
+        font-size: 14px;
+        font-weight: 700;
+      }
+
+      h1 {
+        margin: 16px 0 12px;
+        font-size: clamp(32px, 6vw, 52px);
+        line-height: 1.05;
+      }
+
+      p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.7;
+      }
+
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 24px;
+      }
+
+      .button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 52px;
+        padding: 0 20px;
+        border-radius: 16px;
+        text-decoration: none;
+        font-weight: 700;
+      }
+
+      .button-primary {
+        color: #fff;
+        background: linear-gradient(135deg, var(--accent) 0%, #406d5c 100%);
+      }
+
+      .button-secondary {
+        color: var(--ink);
+        border: 1px solid var(--line);
+        background: rgba(255, 255, 255, 0.66);
+      }
+
+      .meta {
+        display: grid;
+        gap: 12px;
+        margin-top: 24px;
+      }
+
+      .meta-item {
+        padding: 16px 18px;
+        border-radius: 18px;
+        background: rgba(255, 255, 255, 0.72);
+        border: 1px solid var(--line);
+      }
+
+      .meta-label {
+        display: block;
+        margin-bottom: 6px;
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .notice {
+        margin-top: 24px;
+        padding: 18px;
+        border-radius: 18px;
+        background: rgba(201, 140, 61, 0.12);
+        border: 1px solid rgba(201, 140, 61, 0.25);
+      }
+
+      ol {
+        margin: 12px 0 0;
+        padding-left: 20px;
+        color: var(--muted);
+        line-height: 1.7;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <section class="card">
+        <span class="eyebrow">Android 測試版下載</span>
+        <h1>人權博物館APP</h1>
+        <p>
+          掃描 QR Code 後可由此頁下載最新版 APK。首次安裝完成後，後續即可直接從手機開啟測試。
+        </p>
+
+        <div class="actions">
+          <a class="button button-primary" href="./downloads/app-release.apk">下載 APK</a>
+          <a class="button button-secondary" href="#install">安裝說明</a>
+        </div>
+
+        <div class="meta">
+          <div class="meta-item">
+            <span class="meta-label">目前版本</span>
+            <strong>v0.1.0</strong>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">更新策略</span>
+            <strong>首次下載 APK，之後以 App 內動態內容更新為主</strong>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">支援平台</span>
+            <strong>Android</strong>
+          </div>
+        </div>
+
+        <div class="notice" id="install">
+          <strong>安裝方式</strong>
+          <ol>
+            <li>點擊「下載 APK」下載安裝檔。</li>
+            <li>若手機提示安全性限制，允許此來源安裝。</li>
+            <li>安裝完成後開啟「人權博物館APP」。</li>
+            <li>首次執行時允許定位、相機與藍牙權限。</li>
+          </ol>
+        </div>
+      </section>
+    </main>
+  </body>
+  </html>
+

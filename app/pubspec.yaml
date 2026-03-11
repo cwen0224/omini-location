@@ -1,0 +1,24 @@
+name: human_rights_museum_app
+description: Human Rights Museum App prototype for sensor-based indoor/outdoor navigation.
+publish_to: "none"
+version: 0.1.0+1
+
+environment:
+  sdk: ">=3.3.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  camera: ^0.11.1
+  flutter_blue_plus: ^1.35.5
+  geolocator: ^14.0.2
+  permission_handler: ^11.4.0
+  sensors_plus: ^6.1.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+
+flutter:
+  uses-material-design: true
