@@ -1,10 +1,22 @@
 import 'package:flutter/material.dart';
 
+import '../../core/error_reporter.dart';
 import '../sensors/sensor_hub_page.dart';
 import '../support/report_issue_page.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  @override
+  void initState() {
+    super.initState();
+    ErrorReporter.recordInfo('Home page opened', source: 'Navigation');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,6 +44,10 @@ class HomePage extends StatelessWidget {
                 subtitle: const Text('檢查裝置能力、權限狀態與感測器資料流'),
                 trailing: const Icon(Icons.chevron_right),
                 onTap: () {
+                  ErrorReporter.recordInfo(
+                    'Open sensor hub',
+                    source: 'Navigation',
+                  );
                   Navigator.of(context).push(
                     MaterialPageRoute<void>(
                       builder: (_) => const SensorHubPage(),
@@ -47,6 +63,10 @@ class HomePage extends StatelessWidget {
                 subtitle: const Text('複製除錯資訊，快速貼給 AI 排查'),
                 trailing: const Icon(Icons.chevron_right),
                 onTap: () {
+                  ErrorReporter.recordInfo(
+                    'Open report issue page',
+                    source: 'Navigation',
+                  );
                   Navigator.of(context).push(
                     MaterialPageRoute<void>(
                       builder: (_) => const ReportIssuePage(),

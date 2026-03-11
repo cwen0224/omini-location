@@ -1,13 +1,25 @@
 import 'package:flutter/material.dart';
 
+import '../../core/error_reporter.dart';
 import 'ble_page.dart';
 import 'camera_page.dart';
 import 'gps_page.dart';
 import 'imu_page.dart';
 import 'sensor_models.dart';
 
-class SensorHubPage extends StatelessWidget {
+class SensorHubPage extends StatefulWidget {
   const SensorHubPage({super.key});
+
+  @override
+  State<SensorHubPage> createState() => _SensorHubPageState();
+}
+
+class _SensorHubPageState extends State<SensorHubPage> {
+  @override
+  void initState() {
+    super.initState();
+    ErrorReporter.recordInfo('Sensor hub opened', source: 'Navigation');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -71,6 +83,10 @@ class SensorHubPage extends StatelessWidget {
                   'BLE Beacon' => const BlePage(),
                   _ => const CameraPage(),
                 };
+                ErrorReporter.recordInfo(
+                  'Open ${sensor.title} page',
+                  source: 'Navigation',
+                );
                 Navigator.of(context).push(
                   MaterialPageRoute<void>(builder: (_) => page),
                 );
@@ -104,4 +120,3 @@ class _StatusChip extends StatelessWidget {
     );
   }
 }
-

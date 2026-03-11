@@ -17,6 +17,7 @@ class _ReportIssuePageState extends State<ReportIssuePage> {
   @override
   void initState() {
     super.initState();
+    ErrorReporter.recordInfo('Report issue page opened', source: 'Navigation');
     _loadReport();
     ErrorReporter.entries.addListener(_loadReport);
   }
@@ -97,4 +98,3 @@ class _ReportIssuePageState extends State<ReportIssuePage> {
     );
   }
 }
-

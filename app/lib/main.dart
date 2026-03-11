@@ -6,5 +6,7 @@ import 'core/error_reporter.dart';
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   ErrorReporter.install();
+  ErrorReporter.recordInfo('Widgets binding ready');
   runApp(const HumanRightsMuseumApp());
+  ErrorReporter.recordInfo('runApp completed');
 }

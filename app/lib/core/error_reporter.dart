@@ -8,10 +8,12 @@ import 'package:package_info_plus/package_info_plus.dart';
 class ErrorReporter {
   ErrorReporter._();
 
-  static final ValueNotifier<List<ErrorEntry>> entries =
-      ValueNotifier<List<ErrorEntry>>(<ErrorEntry>[]);
+  static final ValueNotifier<List<ReportEntry>> entries =
+      ValueNotifier<List<ReportEntry>>(<ReportEntry>[]);
 
   static void install() {
+    recordInfo('App bootstrap started');
+
     FlutterError.onError = (details) {
       FlutterError.presentError(details);
       record(
@@ -31,22 +33,35 @@ class ErrorReporter {
     };
   }
 
+  static void recordInfo(String message, {String source = 'Lifecycle'}) {
+    _pushEntry(
+      ReportEntry(
+        timestamp: DateTime.now(),
+        level: ReportLevel.info,
+        source: source,
+        message: message,
+      ),
+    );
+  }
+
   static void record({
     required String source,
     required String message,
     StackTrace? stackTrace,
   }) {
-    final next = List<ErrorEntry>.from(entries.value)
-      ..insert(
-        0,
-        ErrorEntry(
-          timestamp: DateTime.now(),
-          source: source,
-          message: message,
-          stackTrace: stackTrace?.toString(),
-        ),
-      );
+    _pushEntry(
+      ReportEntry(
+        timestamp: DateTime.now(),
+        level: ReportLevel.error,
+        source: source,
+        message: message,
+        stackTrace: stackTrace?.toString(),
+      ),
+    );
+  }
 
+  static void _pushEntry(ReportEntry entry) {
+    final next = List<ReportEntry>.from(entries.value)..insert(0, entry);
     if (next.length > 30) {
       next.removeRange(30, next.length);
     }
@@ -64,36 +79,52 @@ class ErrorReporter {
       ..writeln('版本: ${packageInfo.version}+${packageInfo.buildNumber}')
       ..writeln('模式: ${kReleaseMode ? 'release' : 'debug'}')
       ..writeln('')
+      ..writeln('最近事件:')
+      ..writeln(_formatEntries(ReportLevel.info))
+      ..writeln('')
       ..writeln('最近錯誤:');
 
-    if (entries.value.isEmpty) {
-      buffer.writeln('- 無紀錄');
-    } else {
-      for (final entry in entries.value.take(10)) {
-        buffer.writeln(
-          '- [${entry.timestamp.toIso8601String()}] ${entry.source}: ${entry.message}',
-        );
-        if (entry.stackTrace != null && entry.stackTrace!.isNotEmpty) {
-          buffer.writeln(entry.stackTrace);
-        }
-      }
-    }
+    buffer.writeln(_formatEntries(ReportLevel.error));
 
     return buffer.toString();
   }
+
+  static String _formatEntries(ReportLevel level) {
+    final filtered = entries.value.where((entry) => entry.level == level).take(10);
+    if (filtered.isEmpty) {
+      return '- 無紀錄';
+    }
+
+    final buffer = StringBuffer();
+    for (final entry in filtered) {
+      buffer.writeln(
+        '- [${entry.timestamp.toIso8601String()}] ${entry.source}: ${entry.message}',
+      );
+      if (entry.stackTrace != null && entry.stackTrace!.isNotEmpty) {
+        buffer.writeln(entry.stackTrace);
+      }
+    }
+    return buffer.toString().trimRight();
+  }
 }
 
-class ErrorEntry {
-  const ErrorEntry({
+enum ReportLevel {
+  info,
+  error,
+}
+
+class ReportEntry {
+  const ReportEntry({
     required this.timestamp,
+    required this.level,
     required this.source,
     required this.message,
     this.stackTrace,
   });
 
   final DateTime timestamp;
+  final ReportLevel level;
   final String source;
   final String message;
   final String? stackTrace;
 }
-
