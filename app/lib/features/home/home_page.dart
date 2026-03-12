@@ -19,12 +19,28 @@ class _HomePageState extends State<HomePage> {
   UpdateCheckResult? _updateResult;
   String _updateError = '';
   bool _checkingUpdate = false;
+  bool _installingUpdate = false;
+  double? _installProgress;
+  String _installStatusMessage = '';
 
   @override
   void initState() {
     super.initState();
     ErrorReporter.recordInfo('Home page opened', source: 'Navigation');
+    _prepareUpdateWorkspace();
     _checkForUpdates();
+  }
+
+  Future<void> _prepareUpdateWorkspace() async {
+    try {
+      await _updateService.cleanupStagedApks();
+    } catch (error, stackTrace) {
+      ErrorReporter.record(
+        source: 'Update',
+        message: 'Failed to prepare update workspace: $error',
+        stackTrace: stackTrace,
+      );
+    }
   }
 
   Future<void> _checkForUpdates() async {
@@ -54,9 +70,76 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  Future<void> _installUpdate() async {
+    final result = _updateResult;
+    if (result == null || !result.hasUpdate) {
+      return;
+    }
+
+    setState(() {
+      _installingUpdate = true;
+      _installProgress = null;
+      _installStatusMessage = '正在清理舊更新檔...';
+      _updateError = '';
+    });
+
+    try {
+      final downloaded = await _updateService.downloadUpdate(
+        result.manifest,
+        onProgress: (progress) {
+          if (!mounted) {
+            return;
+          }
+          setState(() {
+            _installProgress = progress;
+            _installStatusMessage =
+                '下載更新中 ${(progress * 100).toStringAsFixed(0)}%';
+          });
+        },
+      );
+
+      if (!mounted) {
+        return;
+      }
+
+      setState(() {
+        _installStatusMessage = '正在開啟 Android 安裝器...';
+      });
+
+      final launchResult = await _updateService.launchInstaller(downloaded.file);
+      if (!mounted) {
+        return;
+      }
+
+      setState(() {
+        _installingUpdate = false;
+        _installProgress = launchResult.status == InstallLaunchStatus.launched
+            ? 1
+            : null;
+        _installStatusMessage = launchResult.message;
+      });
+    } catch (error, stackTrace) {
+      ErrorReporter.record(
+        source: 'Update',
+        message: 'In-app update failed: $error',
+        stackTrace: stackTrace,
+      );
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _installingUpdate = false;
+        _installProgress = null;
+        _installStatusMessage = '';
+        _updateError = 'App 內更新失敗，請改用下載頁更新。';
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final bottomInset = MediaQuery.paddingOf(context).bottom + 24;
+    final hasUpdate = _updateResult?.hasUpdate ?? false;
 
     return Scaffold(
       appBar: AppBar(
@@ -71,6 +154,10 @@ class _HomePageState extends State<HomePage> {
               loading: _checkingUpdate,
               error: _updateError,
               onRetry: _checkForUpdates,
+              onInstallUpdate: hasUpdate ? _installUpdate : null,
+              installing: _installingUpdate,
+              installProgress: _installProgress,
+              installStatusMessage: _installStatusMessage,
             ),
             const SizedBox(height: 20),
             Text(

@@ -11,12 +11,20 @@ class UpdateStatusCard extends StatelessWidget {
     required this.loading,
     required this.error,
     required this.onRetry,
+    required this.onInstallUpdate,
+    required this.installing,
+    required this.installProgress,
+    required this.installStatusMessage,
   });
 
   final UpdateCheckResult? result;
   final bool loading;
   final String error;
   final VoidCallback onRetry;
+  final VoidCallback? onInstallUpdate;
+  final bool installing;
+  final double? installProgress;
+  final String installStatusMessage;
 
   @override
   Widget build(BuildContext context) {
@@ -88,6 +96,21 @@ class UpdateStatusCard extends StatelessWidget {
               const SizedBox(height: 6),
               ...manifest.releaseNotes.map((item) => Text('• $item')),
             ],
+            if (installStatusMessage.isNotEmpty) ...[
+              const SizedBox(height: 12),
+              Text(
+                installStatusMessage,
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+            ],
+            if (installing) ...[
+              const SizedBox(height: 12),
+              LinearProgressIndicator(
+                value: installProgress != null && installProgress! > 0 && installProgress! < 1
+                    ? installProgress
+                    : null,
+              ),
+            ],
             const SizedBox(height: 16),
             Wrap(
               spacing: 12,
@@ -95,11 +118,22 @@ class UpdateStatusCard extends StatelessWidget {
               children: [
                 if (result!.hasUpdate)
                   FilledButton(
-                    onPressed: () => _openUrl(manifest.downloadPageUrl),
-                    child: Text(manifest.forceUpdate ? '立即更新' : '前往下載'),
+                    onPressed: installing ? null : onInstallUpdate,
+                    child: Text(
+                      installing
+                          ? '更新中...'
+                          : manifest.forceUpdate
+                              ? '立即更新'
+                              : '下載並安裝',
+                    ),
+                  ),
+                if (result!.hasUpdate)
+                  OutlinedButton(
+                    onPressed: installing ? null : () => _openUrl(manifest.downloadPageUrl),
+                    child: const Text('前往下載頁'),
                   ),
                 OutlinedButton(
-                  onPressed: onRetry,
+                  onPressed: installing ? null : onRetry,
                   child: const Text('重新檢查'),
                 ),
               ],
@@ -123,4 +157,3 @@ class UpdateStatusCard extends StatelessWidget {
     }
   }
 }
-
