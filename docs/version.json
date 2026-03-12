@@ -1,14 +1,14 @@
 {
-  "app_version": "0.1.9",
-  "build_number": 10,
+  "app_version": "0.1.10",
+  "build_number": 11,
   "release_notes": [
-    "新增 Session Replay / 分析頁",
-    "可從 Supabase 抓最近 session 並計算 quality scores",
-    "補齊 replay 資料模型與分析 service"
+    "新增 App 內畫面截圖回報，可直接保留目前畫面並上傳到 Supabase",
+    "問題回報改為可附帶截圖與除錯資訊一起上傳",
+    "補齊 Supabase 初始化錯誤提示與 error-attachments Storage 設定"
   ],
-  "apk_url": "https://cwen0224.github.io/omini-location/downloads/app-release.apk?v=0.1.9+10",
+  "apk_url": "https://cwen0224.github.io/omini-location/downloads/app-release.apk?v=0.1.10+11",
   "download_page_url": "https://cwen0224.github.io/omini-location/",
   "force_update": false,
-  "published_at": "2026-03-12T16:45:00+08:00",
-  "content_version": "2026.03.12.8"
+  "published_at": "2026-03-12T18:20:00+08:00",
+  "content_version": "2026.03.12.9"
 }

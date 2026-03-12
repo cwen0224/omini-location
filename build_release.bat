@@ -42,8 +42,11 @@ if exist "%DEX_DIR%" rmdir /s /q "%DEX_DIR%" >> "%LOG_FILE%" 2>&1
 echo CLEAN APK OUTPUTS >> "%LOG_FILE%"
 if exist "%APK_DIR%" rmdir /s /q "%APK_DIR%" >> "%LOG_FILE%" 2>&1
 call "%FLUTTER_BIN%" doctor >> "%LOG_FILE%" 2>&1
+if errorlevel 1 goto build_failed
 call "%FLUTTER_BIN%" pub get >> "%LOG_FILE%" 2>&1
+if errorlevel 1 goto build_failed
 call "%FLUTTER_BIN%" build apk --release -v >> "%LOG_FILE%" 2>&1
+if errorlevel 1 goto build_failed
 if not exist "%PUBLISH_DIR%" mkdir "%PUBLISH_DIR%"
 if exist "%RELEASE_APK%" (
   echo COPY APK TO DOCS >> "%LOG_FILE%"
@@ -60,3 +63,11 @@ if exist "%PUBLISH_APK%" (
   echo %PUBLISH_APK%
 )
 exit /b 0
+
+:build_failed
+echo. >> "%LOG_FILE%"
+echo ==== RELEASE BUILD FAILED %date% %time% ==== >> "%LOG_FILE%"
+echo.
+echo Release build failed. See log:
+echo %LOG_FILE%
+exit /b 1
