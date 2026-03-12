@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 
+import '../../core/error_reporter.dart';
 import 'sensor_models.dart';
 import 'sensor_page_scaffold.dart';
 
@@ -16,13 +18,16 @@ class ImuPage extends StatefulWidget {
 class _ImuPageState extends State<ImuPage> {
   StreamSubscription<AccelerometerEvent>? _accelerometerSubscription;
   StreamSubscription<GyroscopeEvent>? _gyroscopeSubscription;
+  StreamSubscription<MagnetometerEvent>? _magnetometerSubscription;
   AccelerometerEvent? _accelerometer;
   GyroscopeEvent? _gyroscope;
+  MagnetometerEvent? _magnetometer;
   int _samples = 0;
 
   @override
   void initState() {
     super.initState();
+    ErrorReporter.recordInfo('IMU page opened', source: 'Navigation');
     _start();
   }
 
@@ -30,6 +35,7 @@ class _ImuPageState extends State<ImuPage> {
   void dispose() {
     _accelerometerSubscription?.cancel();
     _gyroscopeSubscription?.cancel();
+    _magnetometerSubscription?.cancel();
     super.dispose();
   }
 
@@ -48,15 +54,33 @@ class _ImuPageState extends State<ImuPage> {
         _gyroscope = event;
       });
     });
+
+    _magnetometerSubscription = magnetometerEvents.listen((event) {
+      if (!mounted) return;
+      setState(() {
+        _magnetometer = event;
+      });
+    });
+  }
+
+  String _headingText() {
+    if (_magnetometer == null) {
+      return '-';
+    }
+
+    final heading = math.atan2(_magnetometer!.y, _magnetometer!.x) * 180 / math.pi;
+    final normalized = (heading + 360) % 360;
+    return '${normalized.toStringAsFixed(1)}°';
   }
 
   @override
   Widget build(BuildContext context) {
-    final hasData = _accelerometer != null || _gyroscope != null;
+    final hasData =
+        _accelerometer != null || _gyroscope != null || _magnetometer != null;
 
     return SensorPageScaffold(
-      title: 'IMU 測試',
-      summary: '檢查陀螺儀與加速度計資料流，供後續姿態估計與 PDR 使用。',
+      title: 'IMU / 羅盤測試',
+      summary: '檢查加速度計、陀螺儀、磁力計與基本方位角，供後續姿態估計、PDR 與朝向判定使用。',
       status: hasData ? SensorStatus.ready : SensorStatus.pending,
       actions: [
         FilledButton(
@@ -82,8 +106,14 @@ class _ImuPageState extends State<ImuPage> {
               ? '-'
               : '${_gyroscope!.x.toStringAsFixed(2)}, ${_gyroscope!.y.toStringAsFixed(2)}, ${_gyroscope!.z.toStringAsFixed(2)}',
         ),
+        SensorReading(
+          label: '磁力計 X/Y/Z',
+          value: _magnetometer == null
+              ? '-'
+              : '${_magnetometer!.x.toStringAsFixed(2)}, ${_magnetometer!.y.toStringAsFixed(2)}, ${_magnetometer!.z.toStringAsFixed(2)}',
+        ),
+        SensorReading(label: '方位角', value: _headingText()),
       ],
     );
   }
 }
-

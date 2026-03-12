@@ -1,14 +1,14 @@
 {
-  "app_version": "0.1.1",
-  "build_number": 2,
+  "app_version": "0.1.2",
+  "build_number": 3,
   "release_notes": [
-    "加入 Beacon 命名與保存功能",
-    "App 內部改為深色主題",
-    "強化版本檢查與問題回報資訊"
+    "IMU 頁面新增磁力計與方位角顯示",
+    "補齊羅盤儀需求與 AI 接手開發計畫",
+    "版本更新流程同步升版"
   ],
   "apk_url": "https://cwen0224.github.io/omini-location/downloads/app-release.apk",
   "download_page_url": "https://cwen0224.github.io/omini-location/",
   "force_update": false,
-  "published_at": "2026-03-11T18:05:00+08:00",
-  "content_version": "2026.03.11.2"
+  "published_at": "2026-03-12T11:05:00+08:00",
+  "content_version": "2026.03.12.1"
 }
