@@ -435,6 +435,10 @@ app/
   - 清 release dex / outputs
   - 執行 release build
   - 產出 release APK，供後續上傳到 GitHub Release asset
+- `publish_github_release.bat`
+  - 檢查 `gh auth status`
+  - 呼叫 `build_release.bat`
+  - 依 `app/pubspec.yaml` 版本建立或更新 GitHub Release asset
 
 ### 14.3 發版規則
 - 每次對外可見更新時必做：
@@ -442,7 +446,8 @@ app/
   - 更新 `docs/version.json`
   - 更新 `docs/index.html`
   - 重建 release APK
-  - 上傳 `app-release.apk` 到對應 GitHub Release asset，並同步更新 `apk_url`
+  - 執行 `publish_github_release.bat` 上傳 `app-release.apk` 到對應 GitHub Release asset
+  - 確認 `apk_url` 指向對應 Release asset
   - commit / push
 - 若未同步版本號，App 內版本檢查會失效，這是已確認的實務規則。
 
