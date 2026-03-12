@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../core/error_reporter.dart';
+import 'all_module_test_page.dart';
 import 'ble_page.dart';
 import 'camera_page.dart';
 import 'gps_page.dart';
@@ -25,6 +26,12 @@ class _SensorHubPageState extends State<SensorHubPage> {
   Widget build(BuildContext context) {
     final bottomInset = MediaQuery.paddingOf(context).bottom + 24;
     final sensors = <SensorCapability>[
+      const SensorCapability(
+        title: '全模組定位測試',
+        description: '同時查看 GPS、IMU/羅盤、BLE、Camera 與總移動地圖',
+        status: SensorStatus.pending,
+        icon: 'ALL',
+      ),
       const SensorCapability(
         title: 'GPS 定位',
         description: '前景定位、精度、時間戳、可用性狀態',
@@ -80,6 +87,7 @@ class _SensorHubPageState extends State<SensorHubPage> {
                 ),
                 onTap: () {
                   final page = switch (sensor.title) {
+                    '全模組定位測試' => const AllModuleTestPage(),
                     'GPS 定位' => const GpsPage(),
                     'IMU' => const ImuPage(),
                     'BLE Beacon' => const BlePage(),
