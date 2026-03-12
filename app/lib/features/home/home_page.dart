@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../core/error_reporter.dart';
 import '../sensors/sensor_hub_page.dart';
 import '../support/report_issue_page.dart';
+import '../sync/sync_overview_page.dart';
 import '../update/update_service.dart';
 import '../update/update_status_card.dart';
 
@@ -116,6 +117,25 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
           const SizedBox(height: 12),
+          Card(
+            child: ListTile(
+              title: const Text('雲端同步規劃'),
+              subtitle: const Text('檢查錯誤回報、Beacon、測試資料與 AR 媒體的雲端結構'),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () {
+                ErrorReporter.recordInfo(
+                  'Open sync overview page',
+                  source: 'Navigation',
+                );
+                Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (_) => const SyncOverviewPage(),
+                  ),
+                );
+              },
+            ),
+          ),
+          const SizedBox(height: 12),
           const Card(
             child: ListTile(
               title: Text('開發狀態'),
@@ -127,3 +147,4 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
+
