@@ -123,6 +123,7 @@ App 安裝一次後，後續更新以兩種層次處理：
 ### 4.5 已完成的更新機制基線
 目前專案已具備：
 - GitHub Pages 下載頁
+- Google Cloud Storage APK 檔案來源（目前 bucket：`sivens-centaur-app-space`）
 - 遠端 `version.json` 版本檢查
 - App 內更新卡片與更新內容顯示
 - App 內直接下載 APK
@@ -441,6 +442,7 @@ app/
   - 更新 `docs/version.json`
   - 更新 `docs/index.html`
   - 重建 `docs/downloads/app-release.apk`
+  - 若 APK 走 Google Cloud Storage，需同步上傳最新 APK 並更新 `apk_url`
   - commit / push
 - 若未同步版本號，App 內版本檢查會失效，這是已確認的實務規則。
 

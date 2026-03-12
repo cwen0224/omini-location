@@ -6,7 +6,7 @@
     "回報流程改為使用全域 Navigator 開啟頁面，避免 builder context 失效",
     "截圖失敗時仍會進入回報頁，不再整個流程卡住"
   ],
-  "apk_url": "https://cwen0224.github.io/omini-location/downloads/app-release.apk?v=0.1.11+12",
+  "apk_url": "https://storage.googleapis.com/sivens-centaur-app-space/app-release.apk?v=0.1.11+12",
   "download_page_url": "https://cwen0224.github.io/omini-location/",
   "force_update": false,
   "published_at": "2026-03-12T20:05:00+08:00",
