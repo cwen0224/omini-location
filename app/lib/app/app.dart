@@ -1,11 +1,43 @@
 import 'package:flutter/material.dart';
 
 import '../core/app_capture_service.dart';
+import '../core/error_reporter.dart';
 import '../features/home/home_page.dart';
 import '../features/support/report_issue_page.dart';
 
+final GlobalKey<NavigatorState> appNavigatorKey = GlobalKey<NavigatorState>();
+
 class HumanRightsMuseumApp extends StatelessWidget {
   const HumanRightsMuseumApp({super.key});
+
+  Future<void> _openReportFlow() async {
+    try {
+      await AppCaptureService.instance
+          .captureVisibleApp()
+          .timeout(const Duration(milliseconds: 800));
+    } catch (error, stackTrace) {
+      ErrorReporter.record(
+        source: 'ReportFlow',
+        message: 'Capture visible app failed: $error',
+        stackTrace: stackTrace,
+      );
+    }
+
+    final navigator = appNavigatorKey.currentState;
+    if (navigator == null) {
+      ErrorReporter.record(
+        source: 'ReportFlow',
+        message: 'Navigator unavailable while opening report page.',
+      );
+      return;
+    }
+
+    await navigator.push(
+      MaterialPageRoute<void>(
+        builder: (_) => const ReportIssuePage(),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,6 +53,7 @@ class HumanRightsMuseumApp extends StatelessWidget {
     return MaterialApp(
       title: '人權博物館APP',
       debugShowCheckedModeBanner: false,
+      navigatorKey: appNavigatorKey,
       theme: ThemeData(
         brightness: Brightness.dark,
         colorScheme: scheme,
@@ -51,17 +84,7 @@ class HumanRightsMuseumApp extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.all(16),
                   child: FilledButton.icon(
-                    onPressed: () async {
-                      await AppCaptureService.instance.captureVisibleApp();
-                      if (!context.mounted) {
-                        return;
-                      }
-                      Navigator.of(context).push(
-                        MaterialPageRoute<void>(
-                          builder: (_) => const ReportIssuePage(),
-                        ),
-                      );
-                    },
+                    onPressed: _openReportFlow,
                     icon: const Icon(Icons.bug_report_outlined),
                     label: const Text('回報'),
                   ),
