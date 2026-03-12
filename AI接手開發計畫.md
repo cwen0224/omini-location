@@ -45,6 +45,19 @@
 不建議作為主線：
 - 純網頁/PWA，因為 BLE、背景能力、相機追蹤、感測器整合與 AR 能力會受限制
 
+### 3.5 正式定位核心方向
+目前已確認後續正式定位核心不應延續頁面級 heuristic，應改採：
+- `IMU prediction`
+- `GPS / BLE / compass / camera measurement update`
+- `EKF / Error-State KF`
+- `quality-driven fusion`
+- `indoor / transition / outdoor handover`
+
+已建立的第一批程式骨架在：
+- `app/lib/domain/localization/`
+
+接手者應把這一層視為後續正式定位主線，而不是再從測試頁重新發明一套定位邏輯。
+
 ### 3.3 開發效率優先原則
 後續 AI 或工程師接手時，請直接遵守以下規則：
 - 優先維持 Android 可安裝、可更新、可真機測試，再擴充功能。
@@ -222,6 +235,10 @@ App 安裝一次後，後續更新以兩種層次處理：
 - LocalizationState model
 - Confidence score 欄位
 - 感測器健康檢查機制
+- Measurement model
+- HandoverState model
+- SensorQualityScores model
+- EKF localization service skeleton
 
 ### Phase 3：地圖與導覽 MVP
 目標：
@@ -243,6 +260,8 @@ App 安裝一次後，後續更新以兩種層次處理：
 - 基本室內外切換
 - 信心分數顯示
 - 漂移與失效提示
+- prediction / update 流程接線
+- BLE / compass / GPS measurement update
 
 ### Phase 5：Camera 視覺定位 / AR 指引
 目標：
@@ -458,3 +477,10 @@ app/
 5. 建立 App 更新 manifest / 內容更新 manifest
 6. 完成版本檢查與更新提示
 7. 驗證後再進入定位融合與地圖功能
+
+若延續目前版本，應改為：
+1. 讀 `演算法重構方案.md`
+2. 讀 `app/lib/domain/localization/`
+3. 把 guided session 資料接到 quality score 計算
+4. 實作 handover state machine
+5. 把 EKF skeleton 接到 guided replay / localization pipeline
