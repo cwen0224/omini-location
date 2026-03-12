@@ -10,8 +10,6 @@ set "ANDROID_DIR=%ROOT%app\android"
 set "DEX_DIR=%ROOT%app\build\app\intermediates\dex\release"
 set "APK_DIR=%ROOT%app\build\app\outputs\flutter-apk"
 set "RELEASE_APK=%APK_DIR%\app-release.apk"
-set "PUBLISH_DIR=%ROOT%docs\downloads"
-set "PUBLISH_APK=%PUBLISH_DIR%\app-release.apk"
 
 if not exist "%FLUTTER_BIN%" (
   echo Flutter not found at:
@@ -47,20 +45,15 @@ call "%FLUTTER_BIN%" pub get >> "%LOG_FILE%" 2>&1
 if errorlevel 1 goto build_failed
 call "%FLUTTER_BIN%" build apk --release -v >> "%LOG_FILE%" 2>&1
 if errorlevel 1 goto build_failed
-if not exist "%PUBLISH_DIR%" mkdir "%PUBLISH_DIR%"
-if exist "%RELEASE_APK%" (
-  echo COPY APK TO DOCS >> "%LOG_FILE%"
-  copy /Y "%RELEASE_APK%" "%PUBLISH_APK%" >> "%LOG_FILE%" 2>&1
-)
 echo. >> "%LOG_FILE%"
 echo ==== RELEASE BUILD END %date% %time% ==== >> "%LOG_FILE%"
 
 echo.
 echo Finished. Log saved to:
 echo %LOG_FILE%
-if exist "%PUBLISH_APK%" (
-  echo Published APK:
-  echo %PUBLISH_APK%
+if exist "%RELEASE_APK%" (
+  echo Release APK:
+  echo %RELEASE_APK%
 )
 exit /b 0
 

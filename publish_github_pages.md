@@ -17,11 +17,11 @@ GitHub Pages 會是：
 
 `https://你的帳號.github.io/你的repo名/`
 
-下載按鈕會指向：
+若改用 GitHub Releases，下載按鈕可指向：
 
-`https://你的帳號.github.io/你的repo名/downloads/app-release.apk`
+`https://github.com/你的帳號/你的repo名/releases/download/版本標籤/app-release.apk`
 
 ## 注意
-- GitHub Pages 只負責顯示下載頁與提供檔案下載
+- GitHub Pages 可只負責顯示下載頁
 - 真正安裝仍是 Android 側載 APK
-- 若之後改用 GitHub Releases，可把 `index.html` 的下載連結改成 Release asset
+- 若 APK 改放 GitHub Releases，請把 `index.html` 與 `version.json` 的下載連結都改成 Release asset

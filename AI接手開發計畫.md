@@ -123,7 +123,7 @@ App 安裝一次後，後續更新以兩種層次處理：
 ### 4.5 已完成的更新機制基線
 目前專案已具備：
 - GitHub Pages 下載頁
-- Google Cloud Storage APK 檔案來源（目前 bucket：`sivens-centaur-app-space`）
+- GitHub Releases APK 檔案來源
 - 遠端 `version.json` 版本檢查
 - App 內更新卡片與更新內容顯示
 - App 內直接下載 APK
@@ -434,15 +434,15 @@ app/
   - 停止 Gradle daemon
   - 清 release dex / outputs
   - 執行 release build
-  - 自動複製 APK 到 `docs/downloads/app-release.apk`
+  - 產出 release APK，供後續上傳到 GitHub Release asset
 
 ### 14.3 發版規則
 - 每次對外可見更新時必做：
   - 更新 `app/pubspec.yaml`
   - 更新 `docs/version.json`
   - 更新 `docs/index.html`
-  - 重建 `docs/downloads/app-release.apk`
-  - 若 APK 走 Google Cloud Storage，需同步上傳最新 APK 並更新 `apk_url`
+  - 重建 release APK
+  - 上傳 `app-release.apk` 到對應 GitHub Release asset，並同步更新 `apk_url`
   - commit / push
 - 若未同步版本號，App 內版本檢查會失效，這是已確認的實務規則。
 
