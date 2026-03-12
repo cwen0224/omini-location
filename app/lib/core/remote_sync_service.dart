@@ -231,13 +231,32 @@ class RemoteSyncService {
     final samplesRows = await client
         .from('sensor_samples')
         .select(
-          'sample_time, gps_lat, gps_lng, gps_accuracy, heading, ble_visible_count, camera_tracking_state, metadata_json',
+          'sample_time, gps_lat, gps_lng, gps_accuracy, gps_speed, accel_x, accel_y, accel_z, gyro_x, gyro_y, gyro_z, mag_x, mag_y, mag_z, heading, ble_visible_count, ble_top_beacons, camera_tracking_state, camera_feature_score, metadata_json',
         )
         .eq('session_id', sessionId)
         .order('sample_time');
     final feedbackRows = await client
         .from('user_feedback')
         .select('feedback_type, value, comment')
+        .eq('session_id', sessionId)
+        .order('created_at');
+    final segmentRows = await client
+        .from('action_segments')
+        .select(
+          'id, action_type, started_at, ended_at, target_distance_m, target_heading_deg, expected_behavior, operator_confirmed, metadata_json',
+        )
+        .eq('session_id', sessionId)
+        .order('started_at');
+    final groundTruthRows = await client
+        .from('ground_truth_points')
+        .select('point_label, source, map_x, map_y, map_z, heading_deg')
+        .eq('session_id', sessionId)
+        .order('created_at');
+    final derivedMetricRows = await client
+        .from('derived_metrics')
+        .select(
+          'position_error_m, heading_error_deg, ble_rssi_variance, imu_drift_score, compass_interference_score, camera_relocalization_success_rate',
+        )
         .eq('session_id', sessionId)
         .order('created_at');
 
@@ -248,6 +267,15 @@ class RemoteSyncService {
           .toList(),
       feedback: (feedbackRows as List<dynamic>)
           .map((item) => UserFeedbackRecord.fromJson(item as Map<String, dynamic>))
+          .toList(),
+      segments: (segmentRows as List<dynamic>)
+          .map((item) => ActionSegmentRecord.fromJson(item as Map<String, dynamic>))
+          .toList(),
+      groundTruthPoints: (groundTruthRows as List<dynamic>)
+          .map((item) => GroundTruthPointRecord.fromJson(item as Map<String, dynamic>))
+          .toList(),
+      derivedMetrics: (derivedMetricRows as List<dynamic>)
+          .map((item) => DerivedMetricRecord.fromJson(item as Map<String, dynamic>))
           .toList(),
     );
   }

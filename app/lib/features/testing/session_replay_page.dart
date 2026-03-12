@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../core/remote_sync_service.dart';
+import '../../domain/localization/handover_state.dart';
 import 'session_analysis_service.dart';
 import 'session_replay_models.dart';
 
@@ -163,6 +164,9 @@ class _SessionReplayPageState extends State<SessionReplayPage> {
                       Text('類型：${_bundle!.session.testType}'),
                       Text('樣本數：${_bundle!.samples.length}'),
                       Text('回饋數：${_bundle!.feedback.length}'),
+                      Text('動作段數：${_bundle!.segments.length}'),
+                      Text('真值點數：${_bundle!.groundTruthPoints.length}'),
+                      Text('衍生指標數：${_bundle!.derivedMetrics.length}'),
                     ],
                   ),
                 ),
@@ -201,6 +205,103 @@ class _SessionReplayPageState extends State<SessionReplayPage> {
                         'Camera ready 比例：${(_analysis!.cameraReadyRatio * 100).toStringAsFixed(0)}%',
                       ),
                       Text('不穩定回饋數：${_analysis!.unstableFeedbackCount}'),
+                      Text(
+                        'Segment 完成率：${(_analysis!.segmentCompletionRatio * 100).toStringAsFixed(0)}%',
+                      ),
+                      Text('建議模式：${_modeLabel(_analysis!.recommendedMode)}'),
+                      Text(
+                        '最終信心：${(_analysis!.finalState.confidence * 100).toStringAsFixed(0)}%',
+                      ),
+                      Text(
+                        '最終位置：(${_analysis!.finalState.positionX.toStringAsFixed(1)}, ${_analysis!.finalState.positionY.toStringAsFixed(1)})',
+                      ),
+                      Text(
+                        '最終朝向：${_analysis!.finalState.yawDeg.toStringAsFixed(1)}°',
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+            if (_bundle != null && _bundle!.segments.isNotEmpty) ...[
+              const SizedBox(height: 16),
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Action Segments',
+                          style: Theme.of(context).textTheme.titleMedium),
+                      const SizedBox(height: 8),
+                      ..._bundle!.segments.map(
+                        (segment) => ListTile(
+                          contentPadding: EdgeInsets.zero,
+                          title: Text(segment.metadata['title']?.toString() ?? segment.actionType),
+                          subtitle: Text(
+                            '${segment.actionType} | ${segment.startedAt}'
+                            '${segment.targetDistanceM == null ? '' : ' | ${segment.targetDistanceM}m'}'
+                            '${segment.targetHeadingDeg == null ? '' : ' | ${segment.targetHeadingDeg}°'}',
+                          ),
+                          trailing: Icon(
+                            segment.operatorConfirmed
+                                ? Icons.check_circle
+                                : Icons.radio_button_unchecked,
+                            color: segment.operatorConfirmed
+                                ? Colors.greenAccent
+                                : Colors.orangeAccent,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+            if (_bundle != null && _bundle!.groundTruthPoints.isNotEmpty) ...[
+              const SizedBox(height: 16),
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Ground Truth',
+                          style: Theme.of(context).textTheme.titleMedium),
+                      const SizedBox(height: 8),
+                      ..._bundle!.groundTruthPoints.map(
+                        (point) => Text(
+                          '${point.pointLabel} | ${point.source} | '
+                          '(${point.mapX?.toStringAsFixed(1) ?? '-'}, ${point.mapY?.toStringAsFixed(1) ?? '-'})'
+                          '${point.headingDeg == null ? '' : ' | ${point.headingDeg!.toStringAsFixed(1)}°'}',
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+            if (_analysis != null && _analysis!.timeline.isNotEmpty) ...[
+              const SizedBox(height: 16),
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Replay Timeline',
+                          style: Theme.of(context).textTheme.titleMedium),
+                      const SizedBox(height: 8),
+                      ..._analysis!.timeline.take(12).map(
+                        (point) => Text(
+                          '${point.sampleTime} | ${_modeLabel(point.mode)} | '
+                          'XY=(${point.positionX.toStringAsFixed(1)}, ${point.positionY.toStringAsFixed(1)}) | '
+                          'Heading=${point.headingDeg.toStringAsFixed(1)}° | '
+                          'Conf=${(point.confidence * 100).toStringAsFixed(0)}%',
+                        ),
+                      ),
+                      if (_analysis!.timeline.length > 12)
+                        Text('... 共 ${_analysis!.timeline.length} 筆回放點'),
                     ],
                   ),
                 ),
@@ -210,5 +311,13 @@ class _SessionReplayPageState extends State<SessionReplayPage> {
         ),
       ),
     );
+  }
+
+  String _modeLabel(EnvironmentMode mode) {
+    return switch (mode) {
+      EnvironmentMode.outdoor => 'Outdoor',
+      EnvironmentMode.transition => 'Transition',
+      EnvironmentMode.indoor => 'Indoor',
+    };
   }
 }
