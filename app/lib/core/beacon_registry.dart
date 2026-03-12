@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'remote_sync_service.dart';
+
 class SavedBeacon {
   const SavedBeacon({
     required this.beaconKey,
@@ -84,11 +86,25 @@ class BeaconRegistry {
     }
     _beacons = next;
     await _persist();
+    if (RemoteSyncService.instance.isConfigured) {
+      try {
+        await RemoteSyncService.instance.upsertBeacon(beacon);
+      } catch (_) {
+        // Local save should still succeed even if remote sync fails.
+      }
+    }
   }
 
   Future<void> removeBeacon(String beaconKey) async {
     _beacons = _beacons.where((item) => item.beaconKey != beaconKey).toList();
     await _persist();
+    if (RemoteSyncService.instance.isConfigured) {
+      try {
+        await RemoteSyncService.instance.deleteBeacon(beaconKey);
+      } catch (_) {
+        // Local delete should still succeed even if remote sync fails.
+      }
+    }
   }
 
   Future<void> _persist() async {

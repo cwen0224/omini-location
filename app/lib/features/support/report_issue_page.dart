@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../core/error_reporter.dart';
+import '../../core/remote_sync_service.dart';
 
 class ReportIssuePage extends StatefulWidget {
   const ReportIssuePage({super.key});
@@ -13,6 +14,7 @@ class ReportIssuePage extends StatefulWidget {
 class _ReportIssuePageState extends State<ReportIssuePage> {
   String _report = '載入中...';
   bool _copying = false;
+  bool _uploading = false;
 
   @override
   void initState() {
@@ -50,6 +52,34 @@ class _ReportIssuePageState extends State<ReportIssuePage> {
     );
   }
 
+  Future<void> _uploadReport() async {
+    setState(() {
+      _uploading = true;
+    });
+    try {
+      await RemoteSyncService.instance.uploadIssueReport(report: _report);
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('問題回報已上傳到 Supabase')),
+      );
+    } catch (error, stackTrace) {
+      ErrorReporter.record(
+        source: 'RemoteSync',
+        message: 'Upload issue report failed: $error',
+        stackTrace: stackTrace,
+      );
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('上傳失敗：$error')),
+      );
+    } finally {
+      if (!mounted) return;
+      setState(() {
+        _uploading = false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final bottomInset = MediaQuery.paddingOf(context).bottom + 24;
@@ -74,6 +104,10 @@ class _ReportIssuePageState extends State<ReportIssuePage> {
                   FilledButton(
                     onPressed: _copying ? null : _copyReport,
                     child: Text(_copying ? '複製中...' : '複製除錯資訊'),
+                  ),
+                  FilledButton.tonal(
+                    onPressed: _uploading ? null : _uploadReport,
+                    child: Text(_uploading ? '上傳中...' : '上傳到雲端'),
                   ),
                   OutlinedButton(
                     onPressed: _loadReport,

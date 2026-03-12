@@ -1,9 +1,52 @@
 import 'package:flutter/material.dart';
 
 import '../../core/remote_backend_config.dart';
+import '../../core/remote_sync_service.dart';
 
-class SyncOverviewPage extends StatelessWidget {
+class SyncOverviewPage extends StatefulWidget {
   const SyncOverviewPage({super.key});
+
+  @override
+  State<SyncOverviewPage> createState() => _SyncOverviewPageState();
+}
+
+class _SyncOverviewPageState extends State<SyncOverviewPage> {
+  bool _uploading = false;
+  String _status = '';
+
+  Future<void> _createTestSession() async {
+    setState(() {
+      _uploading = true;
+      _status = '';
+    });
+
+    try {
+      final sessionId = await RemoteSyncService.instance.createTestSession(
+        sessionName: 'manual-test-${DateTime.now().millisecondsSinceEpoch}',
+        testType: 'all_module_manual',
+        metadata: <String, dynamic>{
+          'created_from': 'sync_overview_page',
+          'content_version': '2026.03.12.6',
+          'timestamp': DateTime.now().toIso8601String(),
+        },
+      );
+
+      if (!mounted) return;
+      setState(() {
+        _status = '已建立測試 Session：$sessionId';
+      });
+    } catch (error) {
+      if (!mounted) return;
+      setState(() {
+        _status = '建立失敗：$error';
+      });
+    } finally {
+      if (!mounted) return;
+      setState(() {
+        _uploading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,6 +74,25 @@ class SyncOverviewPage extends StatelessWidget {
                           ? '目前 provider: ${RemoteBackendConfig.provider}'
                           : '填入 Supabase URL 與 anon key 後，即可開始串接錯誤回報、Beacon 標記資料與 AR 錄影上傳。',
                     ),
+                    if (RemoteBackendConfig.enabled) ...[
+                      const SizedBox(height: 8),
+                      Text('Project URL: ${RemoteBackendConfig.supabaseUrl}'),
+                      const SizedBox(height: 8),
+                      Text(
+                        RemoteSyncService.instance.isConfigured
+                            ? 'Supabase 設定已寫入 App'
+                            : 'Supabase 尚未完成設定',
+                      ),
+                      const SizedBox(height: 12),
+                      FilledButton(
+                        onPressed: _uploading ? null : _createTestSession,
+                        child: Text(_uploading ? '建立中...' : '建立測試 Session'),
+                      ),
+                      if (_status.isNotEmpty) ...[
+                        const SizedBox(height: 12),
+                        Text(_status),
+                      ],
+                    ],
                   ],
                 ),
               ),

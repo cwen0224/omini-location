@@ -1,14 +1,14 @@
 {
-  "app_version": "0.1.6",
-  "build_number": 7,
+  "app_version": "0.1.7",
+  "build_number": 8,
   "release_notes": [
-    "新增全模組定位測試頁",
-    "同頁查看 GPS、IMU/羅盤、BLE、Camera 全部參數",
-    "整合總移動地圖與相機預覽"
+    "Supabase 已接入 App",
+    "回報問題可直接上傳到 app_errors",
+    "Beacon 保存會同步到 beacon_registry"
   ],
-  "apk_url": "https://cwen0224.github.io/omini-location/downloads/app-release.apk?v=0.1.6+7",
+  "apk_url": "https://cwen0224.github.io/omini-location/downloads/app-release.apk?v=0.1.7+8",
   "download_page_url": "https://cwen0224.github.io/omini-location/",
   "force_update": false,
-  "published_at": "2026-03-12T14:20:00+08:00",
-  "content_version": "2026.03.12.5"
+  "published_at": "2026-03-12T15:10:00+08:00",
+  "content_version": "2026.03.12.6"
 }
