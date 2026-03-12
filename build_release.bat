@@ -4,10 +4,10 @@ setlocal
 set "ROOT=%~dp0"
 set "FLUTTER_BIN=C:\Users\Sang\flutter\bin\flutter.bat"
 set "LOG_DIR=%ROOT%logs"
-set "LOG_FILE=%LOG_DIR%\app_run.log"
+set "LOG_FILE=%LOG_DIR%\build_release.log"
 set "GRADLE_USER_HOME=%ROOT%.gradle-user-home"
 set "ANDROID_DIR=%ROOT%app\android"
-set "DEX_DIR=%ROOT%app\build\app\intermediates\dex\debug"
+set "DEX_DIR=%ROOT%app\build\app\intermediates\dex\release"
 set "APK_DIR=%ROOT%app\build\app\outputs\flutter-apk"
 
 if not exist "%FLUTTER_BIN%" (
@@ -27,22 +27,22 @@ if not exist "%ROOT%app" (
 
 cd /d "%ROOT%app"
 
-echo ==== APP DEBUG START %date% %time% ==== > "%LOG_FILE%"
+echo ==== RELEASE BUILD START %date% %time% ==== > "%LOG_FILE%"
 echo ROOT=%ROOT% >> "%LOG_FILE%"
 echo GRADLE_USER_HOME=%GRADLE_USER_HOME% >> "%LOG_FILE%"
 echo STOP GRADLE DAEMON >> "%LOG_FILE%"
 pushd "%ANDROID_DIR%"
 call gradlew.bat --stop >> "%LOG_FILE%" 2>&1
 popd
-echo CLEAN DEBUG DEX >> "%LOG_FILE%"
+echo CLEAN RELEASE DEX >> "%LOG_FILE%"
 if exist "%DEX_DIR%" rmdir /s /q "%DEX_DIR%" >> "%LOG_FILE%" 2>&1
 echo CLEAN APK OUTPUTS >> "%LOG_FILE%"
 if exist "%APK_DIR%" rmdir /s /q "%APK_DIR%" >> "%LOG_FILE%" 2>&1
 call "%FLUTTER_BIN%" doctor >> "%LOG_FILE%" 2>&1
 call "%FLUTTER_BIN%" pub get >> "%LOG_FILE%" 2>&1
-call "%FLUTTER_BIN%" build apk --debug -v >> "%LOG_FILE%" 2>&1
+call "%FLUTTER_BIN%" build apk --release -v >> "%LOG_FILE%" 2>&1
 echo. >> "%LOG_FILE%"
-echo ==== APP DEBUG END %date% %time% ==== >> "%LOG_FILE%"
+echo ==== RELEASE BUILD END %date% %time% ==== >> "%LOG_FILE%"
 
 echo.
 echo Finished. Log saved to:
