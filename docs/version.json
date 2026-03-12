@@ -1,14 +1,14 @@
 {
-  "app_version": "0.1.0",
-  "build_number": 1,
+  "app_version": "0.1.1",
+  "build_number": 2,
   "release_notes": [
-    "第一版 Android 測試包",
-    "支援 GPS、IMU、BLE 與 Camera 測試頁",
-    "內建問題回報頁與基本診斷資訊"
+    "加入 Beacon 命名與保存功能",
+    "App 內部改為深色主題",
+    "強化版本檢查與問題回報資訊"
   ],
   "apk_url": "https://cwen0224.github.io/omini-location/downloads/app-release.apk",
   "download_page_url": "https://cwen0224.github.io/omini-location/",
   "force_update": false,
-  "published_at": "2026-03-11T17:20:00+08:00",
-  "content_version": "2026.03.11.1"
+  "published_at": "2026-03-11T18:05:00+08:00",
+  "content_version": "2026.03.11.2"
 }
