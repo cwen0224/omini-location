@@ -52,36 +52,39 @@ class _ReportIssuePageState extends State<ReportIssuePage> {
 
   @override
   Widget build(BuildContext context) {
+    final bottomInset = MediaQuery.paddingOf(context).bottom + 24;
+
     return Scaffold(
       appBar: AppBar(title: const Text('回報問題')),
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              '遇到錯誤時，先截圖，再按「複製除錯資訊」貼給我。',
-              style: Theme.of(context).textTheme.bodyLarge,
-            ),
-            const SizedBox(height: 16),
-            Wrap(
-              spacing: 12,
-              runSpacing: 12,
-              children: [
-                FilledButton(
-                  onPressed: _copying ? null : _copyReport,
-                  child: Text(_copying ? '複製中...' : '複製除錯資訊'),
-                ),
-                OutlinedButton(
-                  onPressed: _loadReport,
-                  child: const Text('重新整理'),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            Expanded(
-              child: Container(
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: ListView(
+            padding: EdgeInsets.only(top: 20, bottom: bottomInset),
+            children: [
+              Text(
+                '遇到錯誤時，先截圖，再按「複製除錯資訊」貼給我。',
+                style: Theme.of(context).textTheme.bodyLarge,
+              ),
+              const SizedBox(height: 16),
+              Wrap(
+                spacing: 12,
+                runSpacing: 12,
+                children: [
+                  FilledButton(
+                    onPressed: _copying ? null : _copyReport,
+                    child: Text(_copying ? '複製中...' : '複製除錯資訊'),
+                  ),
+                  OutlinedButton(
+                    onPressed: _loadReport,
+                    child: const Text('重新整理'),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              Container(
                 width: double.infinity,
+                constraints: const BoxConstraints(minHeight: 360),
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
@@ -90,12 +93,10 @@ class _ReportIssuePageState extends State<ReportIssuePage> {
                     color: Theme.of(context).dividerColor,
                   ),
                 ),
-                child: SingleChildScrollView(
-                  child: SelectableText(_report),
-                ),
+                child: SelectableText(_report),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

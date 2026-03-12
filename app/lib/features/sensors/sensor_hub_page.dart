@@ -23,6 +23,7 @@ class _SensorHubPageState extends State<SensorHubPage> {
 
   @override
   Widget build(BuildContext context) {
+    final bottomInset = MediaQuery.paddingOf(context).bottom + 24;
     final sensors = <SensorCapability>[
       const SensorCapability(
         title: 'GPS 定位',
@@ -54,46 +55,48 @@ class _SensorHubPageState extends State<SensorHubPage> {
       appBar: AppBar(
         title: const Text('感測器測試中心'),
       ),
-      body: ListView.separated(
-        padding: const EdgeInsets.all(20),
-        itemCount: sensors.length,
-        separatorBuilder: (_, __) => const SizedBox(height: 12),
-        itemBuilder: (context, index) {
-          final sensor = sensors[index];
-          return Card(
-            child: ListTile(
-              leading: CircleAvatar(
-                backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-                child: Text(sensor.icon),
+      body: SafeArea(
+        child: ListView.separated(
+          padding: EdgeInsets.fromLTRB(20, 20, 20, bottomInset),
+          itemCount: sensors.length,
+          separatorBuilder: (_, __) => const SizedBox(height: 12),
+          itemBuilder: (context, index) {
+            final sensor = sensors[index];
+            return Card(
+              child: ListTile(
+                leading: CircleAvatar(
+                  backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+                  child: Text(sensor.icon),
+                ),
+                title: Text(sensor.title),
+                subtitle: Text(sensor.description),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    _StatusChip(status: sensor.status),
+                    const SizedBox(width: 8),
+                    const Icon(Icons.chevron_right),
+                  ],
+                ),
+                onTap: () {
+                  final page = switch (sensor.title) {
+                    'GPS 定位' => const GpsPage(),
+                    'IMU' => const ImuPage(),
+                    'BLE Beacon' => const BlePage(),
+                    _ => const CameraPage(),
+                  };
+                  ErrorReporter.recordInfo(
+                    'Open ${sensor.title} page',
+                    source: 'Navigation',
+                  );
+                  Navigator.of(context).push(
+                    MaterialPageRoute<void>(builder: (_) => page),
+                  );
+                },
               ),
-              title: Text(sensor.title),
-              subtitle: Text(sensor.description),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  _StatusChip(status: sensor.status),
-                  const SizedBox(width: 8),
-                  const Icon(Icons.chevron_right),
-                ],
-              ),
-              onTap: () {
-                final page = switch (sensor.title) {
-                  'GPS 定位' => const GpsPage(),
-                  'IMU' => const ImuPage(),
-                  'BLE Beacon' => const BlePage(),
-                  _ => const CameraPage(),
-                };
-                ErrorReporter.recordInfo(
-                  'Open ${sensor.title} page',
-                  source: 'Navigation',
-                );
-                Navigator.of(context).push(
-                  MaterialPageRoute<void>(builder: (_) => page),
-                );
-              },
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }

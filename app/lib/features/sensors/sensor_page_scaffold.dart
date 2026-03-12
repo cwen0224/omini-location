@@ -22,56 +22,58 @@ class SensorPageScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bottomInset = MediaQuery.paddingOf(context).bottom + 24;
+
     return Scaffold(
       appBar: AppBar(title: Text(title)),
-      body: ListView(
-        padding: const EdgeInsets.all(20),
-        children: [
-          _HeroCard(
-            title: title,
-            summary: summary,
-            status: status,
-            actions: actions,
-          ),
-          const SizedBox(height: 16),
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                children: readings
-                    .map(
-                      (reading) => Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              child: Text(
-                                reading.label,
-                                style: Theme.of(context).textTheme.bodyMedium,
+      body: SafeArea(
+        child: ListView(
+          padding: EdgeInsets.fromLTRB(20, 20, 20, bottomInset),
+          children: [
+            _HeroCard(
+              title: title,
+              summary: summary,
+              status: status,
+              actions: actions,
+            ),
+            const SizedBox(height: 16),
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  children: readings
+                      .map(
+                        (reading) => Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 8),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  reading.label,
+                                  style: Theme.of(context).textTheme.bodyMedium,
+                                ),
                               ),
-                            ),
-                            const SizedBox(width: 16),
-                            Flexible(
-                              child: Text(
-                                reading.value,
-                                textAlign: TextAlign.right,
-                                style: Theme.of(context).textTheme.titleMedium,
+                              const SizedBox(width: 16),
+                              Flexible(
+                                child: Text(
+                                  reading.value,
+                                  textAlign: TextAlign.right,
+                                  style: Theme.of(context).textTheme.titleMedium,
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                      ),
-                    )
-                    .toList(),
+                      )
+                      .toList(),
+                ),
               ),
             ),
-          ),
-          if (footer != null) ...[
             const SizedBox(height: 16),
-            footer!,
+            if (footer != null) footer!,
           ],
-        ],
+        ),
       ),
     );
   }
@@ -152,4 +154,3 @@ class _HeroCard extends StatelessWidget {
     );
   }
 }
-
