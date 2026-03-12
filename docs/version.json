@@ -1,14 +1,14 @@
 {
-  "app_version": "0.1.4",
-  "build_number": 5,
+  "app_version": "0.1.5",
+  "build_number": 6,
   "release_notes": [
-    "App 內可直接下載 APK 並啟動安裝",
-    "更新前會先清理舊 APK 暫存檔",
-    "保留下載頁作為更新備援路徑"
+    "四個感測器模組新增人物移動地圖",
+    "GPS 顯示真實軌跡，IMU/BLE/Camera 顯示相對移動",
+    "地圖可顯示手機面向角度"
   ],
-  "apk_url": "https://cwen0224.github.io/omini-location/downloads/app-release.apk?v=0.1.4+5",
+  "apk_url": "https://cwen0224.github.io/omini-location/downloads/app-release.apk?v=0.1.5+6",
   "download_page_url": "https://cwen0224.github.io/omini-location/",
   "force_update": false,
-  "published_at": "2026-03-12T12:45:00+08:00",
-  "content_version": "2026.03.12.3"
+  "published_at": "2026-03-12T13:40:00+08:00",
+  "content_version": "2026.03.12.4"
 }

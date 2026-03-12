@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 
 import '../../core/error_reporter.dart';
+import 'movement_map_card.dart';
+import 'relative_motion_tracker.dart';
 import 'sensor_models.dart';
 import 'sensor_page_scaffold.dart';
 
@@ -23,11 +25,18 @@ class _ImuPageState extends State<ImuPage> {
   GyroscopeEvent? _gyroscope;
   MagnetometerEvent? _magnetometer;
   int _samples = 0;
+  late final RelativeMotionTracker _motionTracker;
 
   @override
   void initState() {
     super.initState();
     ErrorReporter.recordInfo('IMU page opened', source: 'Navigation');
+    _motionTracker = RelativeMotionTracker()
+      ..start(() {
+        if (mounted) {
+          setState(() {});
+        }
+      });
     _start();
   }
 
@@ -36,6 +45,7 @@ class _ImuPageState extends State<ImuPage> {
     _accelerometerSubscription?.cancel();
     _gyroscopeSubscription?.cancel();
     _magnetometerSubscription?.cancel();
+    _motionTracker.dispose();
     super.dispose();
   }
 
@@ -87,6 +97,7 @@ class _ImuPageState extends State<ImuPage> {
           onPressed: () {
             setState(() {
               _samples = 0;
+              _motionTracker.reset();
             });
           },
           child: const Text('重置計數'),
@@ -114,6 +125,11 @@ class _ImuPageState extends State<ImuPage> {
         ),
         SensorReading(label: '方位角', value: _headingText()),
       ],
+      footer: MovementMapCard(
+        title: '人物移動地圖',
+        description: '以 IMU + 羅盤估計相對移動軌跡，屬於測試用 dead-reckoning 視覺化，不代表絕對座標。',
+        points: _motionTracker.points,
+      ),
     );
   }
 }

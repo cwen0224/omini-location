@@ -6,6 +6,8 @@ import 'package:permission_handler/permission_handler.dart';
 
 import '../../core/beacon_registry.dart';
 import '../../core/error_reporter.dart';
+import 'movement_map_card.dart';
+import 'relative_motion_tracker.dart';
 import 'sensor_models.dart';
 import 'sensor_page_scaffold.dart';
 
@@ -24,10 +26,17 @@ class _BlePageState extends State<BlePage> {
   String _adapterState = '未知';
   String _error = '';
   bool _scanning = false;
+  late final RelativeMotionTracker _motionTracker;
 
   @override
   void initState() {
     super.initState();
+    _motionTracker = RelativeMotionTracker()
+      ..start(() {
+        if (mounted) {
+          setState(() {});
+        }
+      });
     _loadSavedBeacons();
     _listenAdapterState();
   }
@@ -35,6 +44,7 @@ class _BlePageState extends State<BlePage> {
   @override
   void dispose() {
     _resultsSubscription?.cancel();
+    _motionTracker.dispose();
     super.dispose();
   }
 
@@ -231,6 +241,14 @@ class _BlePageState extends State<BlePage> {
           onPressed: _scanning ? null : _startScan,
           child: Text(_scanning ? '掃描中...' : '開始掃描'),
         ),
+        OutlinedButton(
+          onPressed: () {
+            setState(() {
+              _motionTracker.reset();
+            });
+          },
+          child: const Text('重置地圖'),
+        ),
       ],
       readings: [
         SensorReading(label: '權限', value: _permissionState),
@@ -258,6 +276,12 @@ class _BlePageState extends State<BlePage> {
       ],
       footer: Column(
         children: [
+          MovementMapCard(
+            title: '人物移動地圖',
+            description: '掃描期間以手機 IMU + 羅盤推估相對移動，方便對照 Beacon 訊號變化與面向角度。',
+            points: _motionTracker.points,
+          ),
+          const SizedBox(height: 12),
           if (_savedBeacons.isNotEmpty)
             Card(
               child: Padding(

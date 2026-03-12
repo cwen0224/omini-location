@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../../core/error_reporter.dart';
+import 'movement_map_card.dart';
+import 'relative_motion_tracker.dart';
 import 'sensor_models.dart';
 import 'sensor_page_scaffold.dart';
 
@@ -19,16 +21,24 @@ class _CameraPageState extends State<CameraPage> {
   String _permissionState = '未檢查';
   String _error = '';
   bool _loading = false;
+  late final RelativeMotionTracker _motionTracker;
 
   @override
   void initState() {
     super.initState();
+    _motionTracker = RelativeMotionTracker()
+      ..start(() {
+        if (mounted) {
+          setState(() {});
+        }
+      });
     _setupCamera();
   }
 
   @override
   void dispose() {
     _controller?.dispose();
+    _motionTracker.dispose();
     super.dispose();
   }
 
@@ -104,6 +114,14 @@ class _CameraPageState extends State<CameraPage> {
           onPressed: _loading ? null : _setupCamera,
           child: const Text('重新初始化'),
         ),
+        OutlinedButton(
+          onPressed: () {
+            setState(() {
+              _motionTracker.reset();
+            });
+          },
+          child: const Text('重置地圖'),
+        ),
       ],
       readings: [
         SensorReading(label: '權限', value: _permissionState),
@@ -115,6 +133,12 @@ class _CameraPageState extends State<CameraPage> {
       ],
       footer: Column(
         children: [
+          MovementMapCard(
+            title: '人物移動地圖',
+            description: '相機預覽期間以手機 IMU + 羅盤推估相對移動，可輔助觀察拍攝時的位移與面向。',
+            points: _motionTracker.points,
+          ),
+          const SizedBox(height: 12),
           if (ready)
             AspectRatio(
               aspectRatio: _controller!.value.aspectRatio,

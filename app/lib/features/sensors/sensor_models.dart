@@ -4,6 +4,18 @@ enum SensorStatus {
   blocked,
 }
 
+class MovementPoint {
+  const MovementPoint({
+    required this.x,
+    required this.y,
+    this.headingDegrees,
+  });
+
+  final double x;
+  final double y;
+  final double? headingDegrees;
+}
+
 class SensorCapability {
   const SensorCapability({
     required this.title,

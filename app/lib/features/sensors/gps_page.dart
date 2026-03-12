@@ -5,6 +5,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../../core/error_reporter.dart';
+import 'movement_map_card.dart';
 import 'sensor_models.dart';
 import 'sensor_page_scaffold.dart';
 
@@ -22,6 +23,7 @@ class _GpsPageState extends State<GpsPage> {
   String _serviceState = '未知';
   String _error = '';
   bool _loading = false;
+  final List<MovementPoint> _track = <MovementPoint>[];
 
   @override
   void initState() {
@@ -94,6 +96,7 @@ class _GpsPageState extends State<GpsPage> {
           _serviceState = '已開啟';
           _loading = false;
         });
+        _appendTrack(position);
       },
       onError: (Object error) {
         if (!mounted) return;
@@ -104,6 +107,19 @@ class _GpsPageState extends State<GpsPage> {
         ErrorReporter.record(source: 'GPS', message: _error);
       },
     );
+  }
+
+  void _appendTrack(Position position) {
+    _track.add(
+      MovementPoint(
+        x: position.longitude,
+        y: position.latitude,
+        headingDegrees: position.heading.isFinite ? position.heading : null,
+      ),
+    );
+    if (_track.length > 120) {
+      _track.removeAt(0);
+    }
   }
 
   @override
@@ -148,15 +164,25 @@ class _GpsPageState extends State<GpsPage> {
           value: _position?.timestamp?.toIso8601String() ?? '-',
         ),
       ],
-      footer: _error.isEmpty
-          ? null
-          : Card(
+      footer: Column(
+        children: [
+          MovementMapCard(
+            title: '人物移動地圖',
+            description: '以 GPS 經緯度軌跡繪製本次移動，若裝置提供 heading 會顯示面向箭頭。',
+            points: _track,
+          ),
+          if (_error.isNotEmpty) ...[
+            const SizedBox(height: 12),
+            Card(
               color: Theme.of(context).colorScheme.errorContainer,
               child: Padding(
                 padding: const EdgeInsets.all(16),
                 child: Text(_error),
               ),
             ),
+          ],
+        ],
+      ),
     );
   }
 }
