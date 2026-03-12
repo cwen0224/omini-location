@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -13,32 +14,80 @@ class RemoteSyncService {
 
   static final RemoteSyncService instance = RemoteSyncService._();
 
+  bool _initialized = false;
+  String? _initializationError;
+
   bool get isConfigured =>
       RemoteBackendConfig.enabled &&
       RemoteBackendConfig.supabaseUrl.isNotEmpty &&
       RemoteBackendConfig.supabaseAnonKey.isNotEmpty;
+
+  bool get isReady => isConfigured && _initialized && _initializationError == null;
+
+  String? get initializationError => _initializationError;
 
   Future<void> initialize() async {
     if (!isConfigured) {
       return;
     }
 
-    await Supabase.initialize(
-      url: RemoteBackendConfig.supabaseUrl,
-      anonKey: RemoteBackendConfig.supabaseAnonKey,
-    );
+    try {
+      await Supabase.initialize(
+        url: RemoteBackendConfig.supabaseUrl,
+        anonKey: RemoteBackendConfig.supabaseAnonKey,
+      );
+      _initialized = true;
+      _initializationError = null;
+    } catch (error) {
+      _initialized = false;
+      _initializationError = error.toString();
+      rethrow;
+    }
   }
 
-  SupabaseClient get client => Supabase.instance.client;
+  SupabaseClient get client {
+    if (!isConfigured) {
+      throw StateError('Supabase 尚未設定完成。');
+    }
+    if (!_initialized) {
+      throw StateError(
+        _initializationError == null
+            ? 'Supabase 尚未初始化。'
+            : 'Supabase 初始化失敗：$_initializationError',
+      );
+    }
+    return Supabase.instance.client;
+  }
 
   Future<void> uploadIssueReport({
     required String report,
     String errorSource = 'manual_report',
+    Uint8List? screenshotBytes,
+    String screenshotFileName = 'issue-screenshot.png',
   }) async {
     final packageInfo = await PackageInfo.fromPlatform();
     await BeaconRegistry.instance.load();
     final beaconSnapshot =
         BeaconRegistry.instance.beacons.map((beacon) => beacon.toJson()).toList();
+    String? screenshotPath;
+    String? screenshotUrl;
+
+    if (screenshotBytes != null && screenshotBytes.isNotEmpty) {
+      final sanitizedName = screenshotFileName.replaceAll(RegExp(r'[^a-zA-Z0-9._-]'), '_');
+      screenshotPath =
+          'issues/${DateTime.now().millisecondsSinceEpoch}-$sanitizedName';
+      await client.storage.from(RemoteBackendConfig.errorsBucket).uploadBinary(
+            screenshotPath,
+            screenshotBytes,
+            fileOptions: const FileOptions(
+              contentType: 'image/png',
+              upsert: true,
+            ),
+          );
+      screenshotUrl = client.storage
+          .from(RemoteBackendConfig.errorsBucket)
+          .getPublicUrl(screenshotPath);
+    }
 
     await client.from('app_errors').insert(<String, dynamic>{
       'app_version': packageInfo.version,
@@ -51,6 +100,8 @@ class RemoteSyncService {
       'context_json': <String, dynamic>{
         'uploaded_at': DateTime.now().toIso8601String(),
         'mode': 'manual_report',
+        'screenshot_path': screenshotPath,
+        'screenshot_url': screenshotUrl,
       },
       'beacon_snapshot_json': beaconSnapshot,
     });

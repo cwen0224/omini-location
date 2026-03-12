@@ -79,13 +79,23 @@ class _SyncOverviewPageState extends State<SyncOverviewPage> {
                       Text('Project URL: ${RemoteBackendConfig.supabaseUrl}'),
                       const SizedBox(height: 8),
                       Text(
-                        RemoteSyncService.instance.isConfigured
-                            ? 'Supabase 設定已寫入 App'
-                            : 'Supabase 尚未完成設定',
+                        RemoteSyncService.instance.isReady
+                            ? 'Supabase 已初始化，可開始讀寫'
+                            : RemoteSyncService.instance.isConfigured
+                                ? 'Supabase 設定已寫入，但初始化失敗'
+                                : 'Supabase 尚未完成設定',
                       ),
+                      if (RemoteSyncService.instance.initializationError != null) ...[
+                        const SizedBox(height: 8),
+                        Text(
+                          '初始化錯誤: ${RemoteSyncService.instance.initializationError}',
+                        ),
+                      ],
                       const SizedBox(height: 12),
                       FilledButton(
-                        onPressed: _uploading ? null : _createTestSession,
+                        onPressed: _uploading || !RemoteSyncService.instance.isReady
+                            ? null
+                            : _createTestSession,
                         child: Text(_uploading ? '建立中...' : '建立測試 Session'),
                       ),
                       if (_status.isNotEmpty) ...[

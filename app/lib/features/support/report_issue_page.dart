@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../core/app_capture_service.dart';
 import '../../core/error_reporter.dart';
 import '../../core/remote_sync_service.dart';
 
@@ -57,10 +58,24 @@ class _ReportIssuePageState extends State<ReportIssuePage> {
       _uploading = true;
     });
     try {
-      await RemoteSyncService.instance.uploadIssueReport(report: _report);
+      final capture = AppCaptureService.instance.latestCapture;
+      final fileName = capture == null
+          ? 'issue-screenshot.png'
+          : 'issue-${capture.capturedAt.toIso8601String().replaceAll(':', '-')}.png';
+      await RemoteSyncService.instance.uploadIssueReport(
+        report: _report,
+        screenshotBytes: capture?.bytes,
+        screenshotFileName: fileName,
+      );
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('問題回報已上傳到 Supabase')),
+        SnackBar(
+          content: Text(
+            capture == null
+                ? '問題回報已上傳到 Supabase'
+                : '問題回報與截圖已上傳到 Supabase',
+          ),
+        ),
       );
     } catch (error, stackTrace) {
       ErrorReporter.record(
@@ -93,10 +108,38 @@ class _ReportIssuePageState extends State<ReportIssuePage> {
             padding: EdgeInsets.only(top: 20, bottom: bottomInset),
             children: [
               Text(
-                '遇到錯誤時，先截圖，再按「複製除錯資訊」貼給我。',
+                '遇到錯誤時，可先按右下角「回報」保留目前畫面，再把除錯資訊和截圖一起上傳。',
                 style: Theme.of(context).textTheme.bodyLarge,
               ),
               const SizedBox(height: 16),
+              if (AppCaptureService.instance.latestCapture != null) ...[
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    color: Theme.of(context).colorScheme.surface,
+                    border: Border.all(color: Theme.of(context).dividerColor),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text('將隨回報上傳目前畫面截圖'),
+                      const SizedBox(height: 12),
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(16),
+                        child: Image.memory(
+                          AppCaptureService.instance.latestCapture!.bytes,
+                          height: 180,
+                          width: double.infinity,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 16),
+              ],
               Wrap(
                 spacing: 12,
                 runSpacing: 12,

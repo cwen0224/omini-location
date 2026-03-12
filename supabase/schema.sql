@@ -1,6 +1,12 @@
 -- Human Rights Museum App remote sync schema
 create extension if not exists pgcrypto;
 
+insert into storage.buckets (id, name, public)
+select 'error-attachments', 'error-attachments', true
+where not exists (
+  select 1 from storage.buckets where id = 'error-attachments'
+);
+
 create table if not exists public.app_errors (
   id uuid primary key default gen_random_uuid(),
   created_at timestamptz not null default now(),
@@ -144,24 +150,28 @@ alter table public.user_feedback enable row level security;
 alter table public.ground_truth_points enable row level security;
 alter table public.derived_metrics enable row level security;
 
+drop policy if exists "allow anon insert app_errors" on public.app_errors;
 create policy "allow anon insert app_errors"
 on public.app_errors
 for insert
 to anon
 with check (true);
 
+drop policy if exists "allow anon select beacon_registry" on public.beacon_registry;
 create policy "allow anon select beacon_registry"
 on public.beacon_registry
 for select
 to anon
 using (true);
 
+drop policy if exists "allow anon insert beacon_registry" on public.beacon_registry;
 create policy "allow anon insert beacon_registry"
 on public.beacon_registry
 for insert
 to anon
 with check (true);
 
+drop policy if exists "allow anon update beacon_registry" on public.beacon_registry;
 create policy "allow anon update beacon_registry"
 on public.beacon_registry
 for update
@@ -169,36 +179,49 @@ to anon
 using (true)
 with check (true);
 
+drop policy if exists "allow anon delete beacon_registry" on public.beacon_registry;
+create policy "allow anon delete beacon_registry"
+on public.beacon_registry
+for delete
+to anon
+using (true);
+
+drop policy if exists "allow anon insert test_sessions" on public.test_sessions;
 create policy "allow anon insert test_sessions"
 on public.test_sessions
 for insert
 to anon
 with check (true);
 
+drop policy if exists "allow anon select test_sessions" on public.test_sessions;
 create policy "allow anon select test_sessions"
 on public.test_sessions
 for select
 to anon
 using (true);
 
+drop policy if exists "allow anon insert session_media" on public.session_media;
 create policy "allow anon insert session_media"
 on public.session_media
 for insert
 to anon
 with check (true);
 
+drop policy if exists "allow anon select session_media" on public.session_media;
 create policy "allow anon select session_media"
 on public.session_media
 for select
 to anon
 using (true);
 
+drop policy if exists "allow anon insert action_segments" on public.action_segments;
 create policy "allow anon insert action_segments"
 on public.action_segments
 for insert
 to anon
 with check (true);
 
+drop policy if exists "allow anon update action_segments" on public.action_segments;
 create policy "allow anon update action_segments"
 on public.action_segments
 for update
@@ -206,56 +229,79 @@ to anon
 using (true)
 with check (true);
 
+drop policy if exists "allow anon select action_segments" on public.action_segments;
 create policy "allow anon select action_segments"
 on public.action_segments
 for select
 to anon
 using (true);
 
+drop policy if exists "allow anon insert sensor_samples" on public.sensor_samples;
 create policy "allow anon insert sensor_samples"
 on public.sensor_samples
 for insert
 to anon
 with check (true);
 
+drop policy if exists "allow anon select sensor_samples" on public.sensor_samples;
 create policy "allow anon select sensor_samples"
 on public.sensor_samples
 for select
 to anon
 using (true);
 
+drop policy if exists "allow anon insert user_feedback" on public.user_feedback;
 create policy "allow anon insert user_feedback"
 on public.user_feedback
 for insert
 to anon
 with check (true);
 
+drop policy if exists "allow anon select user_feedback" on public.user_feedback;
 create policy "allow anon select user_feedback"
 on public.user_feedback
 for select
 to anon
 using (true);
 
+drop policy if exists "allow anon insert ground_truth_points" on public.ground_truth_points;
 create policy "allow anon insert ground_truth_points"
 on public.ground_truth_points
 for insert
 to anon
 with check (true);
 
+drop policy if exists "allow anon select ground_truth_points" on public.ground_truth_points;
 create policy "allow anon select ground_truth_points"
 on public.ground_truth_points
 for select
 to anon
 using (true);
 
+drop policy if exists "allow anon insert derived_metrics" on public.derived_metrics;
 create policy "allow anon insert derived_metrics"
 on public.derived_metrics
 for insert
 to anon
 with check (true);
 
+drop policy if exists "allow anon select derived_metrics" on public.derived_metrics;
 create policy "allow anon select derived_metrics"
 on public.derived_metrics
 for select
 to anon
 using (true);
+
+drop policy if exists "allow anon insert error_attachments" on storage.objects;
+create policy "allow anon insert error_attachments"
+on storage.objects
+for insert
+to anon
+with check (bucket_id = 'error-attachments');
+
+drop policy if exists "allow anon select error_attachments" on storage.objects;
+create policy "allow anon select error_attachments"
+on storage.objects
+for select
+to anon
+using (bucket_id = 'error-attachments');

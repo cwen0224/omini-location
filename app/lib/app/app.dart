@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../core/app_capture_service.dart';
 import '../features/home/home_page.dart';
+import '../features/support/report_issue_page.dart';
 
 class HumanRightsMuseumApp extends StatelessWidget {
   const HumanRightsMuseumApp({super.key});
@@ -36,6 +38,39 @@ class HumanRightsMuseumApp extends StatelessWidget {
         dividerColor: const Color(0x26FFFFFF),
         useMaterial3: true,
       ),
+      builder: (context, child) {
+        return Stack(
+          children: [
+            RepaintBoundary(
+              key: AppCaptureService.instance.boundaryKey,
+              child: child ?? const SizedBox.shrink(),
+            ),
+            SafeArea(
+              child: Align(
+                alignment: Alignment.bottomRight,
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: FilledButton.icon(
+                    onPressed: () async {
+                      await AppCaptureService.instance.captureVisibleApp();
+                      if (!context.mounted) {
+                        return;
+                      }
+                      Navigator.of(context).push(
+                        MaterialPageRoute<void>(
+                          builder: (_) => const ReportIssuePage(),
+                        ),
+                      );
+                    },
+                    icon: const Icon(Icons.bug_report_outlined),
+                    label: const Text('回報'),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        );
+      },
       home: const HomePage(),
     );
   }
