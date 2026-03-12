@@ -1,0 +1,375 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>人權博物館APP 問題回報</title>
+    <style>
+      :root {
+        --bg: #0f1419;
+        --bg-2: #182028;
+        --card: rgba(24, 32, 40, 0.86);
+        --ink: #eef3f7;
+        --muted: #9fb0bf;
+        --line: rgba(255, 255, 255, 0.1);
+        --accent: #7dd3a7;
+        --accent-2: #5fb6ff;
+        --warn: #ffb86c;
+        --danger: #ff8e8e;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+        color: var(--ink);
+        background:
+          radial-gradient(circle at top left, rgba(95, 182, 255, 0.16), transparent 28%),
+          radial-gradient(circle at bottom right, rgba(125, 211, 167, 0.18), transparent 24%),
+          linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%);
+      }
+
+      a {
+        color: var(--accent-2);
+      }
+
+      .page {
+        width: min(1120px, 100%);
+        margin: 0 auto;
+        padding: 24px;
+      }
+
+      .hero,
+      .card,
+      .report-card {
+        border-radius: 24px;
+        background: var(--card);
+        border: 1px solid var(--line);
+        box-shadow: 0 30px 100px rgba(0, 0, 0, 0.28);
+        backdrop-filter: blur(10px);
+      }
+
+      .hero {
+        padding: 24px;
+      }
+
+      .eyebrow {
+        display: inline-block;
+        padding: 8px 12px;
+        border-radius: 999px;
+        background: rgba(95, 182, 255, 0.14);
+        color: var(--accent-2);
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+      }
+
+      h1 {
+        margin: 16px 0 8px;
+        font-size: clamp(32px, 5vw, 52px);
+        line-height: 1.04;
+      }
+
+      p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.7;
+      }
+
+      .toolbar {
+        display: grid;
+        gap: 16px;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        margin-top: 20px;
+      }
+
+      .card {
+        padding: 18px;
+      }
+
+      .card label {
+        display: block;
+        margin-bottom: 8px;
+        font-size: 13px;
+        color: var(--muted);
+      }
+
+      .card input,
+      .card select,
+      .card button {
+        width: 100%;
+        min-height: 48px;
+        border-radius: 14px;
+        border: 1px solid var(--line);
+        background: rgba(255, 255, 255, 0.04);
+        color: var(--ink);
+        padding: 0 14px;
+        font: inherit;
+      }
+
+      .card button {
+        cursor: pointer;
+        font-weight: 700;
+        background: linear-gradient(135deg, var(--accent) 0%, #a2f0ca 100%);
+        color: #08110d;
+      }
+
+      .hint {
+        margin-top: 16px;
+        padding: 16px 18px;
+        border-radius: 18px;
+        border: 1px solid rgba(255, 184, 108, 0.24);
+        background: rgba(255, 184, 108, 0.08);
+      }
+
+      .status {
+        margin-top: 20px;
+        color: var(--muted);
+      }
+
+      .reports {
+        display: grid;
+        gap: 16px;
+        margin-top: 24px;
+      }
+
+      .report-card {
+        padding: 20px;
+      }
+
+      .report-top {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px 16px;
+        align-items: center;
+        margin-bottom: 12px;
+      }
+
+      .badge {
+        display: inline-flex;
+        padding: 6px 10px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 700;
+        background: rgba(125, 211, 167, 0.12);
+        color: var(--accent);
+      }
+
+      .meta {
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      pre {
+        margin: 12px 0 0;
+        padding: 14px;
+        border-radius: 18px;
+        border: 1px solid var(--line);
+        background: rgba(255, 255, 255, 0.04);
+        color: var(--ink);
+        white-space: pre-wrap;
+        word-break: break-word;
+        overflow-x: auto;
+      }
+
+      .row {
+        display: grid;
+        gap: 12px;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        margin-top: 14px;
+      }
+
+      .kv {
+        padding: 14px;
+        border-radius: 18px;
+        border: 1px solid var(--line);
+        background: rgba(255, 255, 255, 0.04);
+      }
+
+      .kv strong {
+        display: block;
+        margin-bottom: 6px;
+      }
+
+      .screenshot {
+        display: block;
+        max-width: min(100%, 440px);
+        border-radius: 18px;
+        border: 1px solid var(--line);
+        margin-top: 14px;
+      }
+
+      .empty {
+        padding: 28px;
+        border-radius: 24px;
+        border: 1px dashed var(--line);
+        text-align: center;
+        color: var(--muted);
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <section class="hero">
+        <span class="eyebrow">Supabase 問題回報查看頁</span>
+        <h1>人權博物館APP 問題回報</h1>
+        <p>這頁直接從 Supabase 讀取最近回報。之後你只要把這頁網址丟給我，我就能直接看，不必再進後台複製。</p>
+
+        <div class="hint">
+          <strong>注意：</strong>
+          這個頁面依賴匿名讀取 `app_errors`。不要把敏感資訊放進問題回報內容。
+        </div>
+
+        <div class="toolbar">
+          <div class="card">
+            <label for="limit">顯示筆數</label>
+            <select id="limit">
+              <option value="10">10</option>
+              <option value="20" selected>20</option>
+              <option value="50">50</option>
+            </select>
+          </div>
+          <div class="card">
+            <label for="source">來源篩選</label>
+            <input id="source" placeholder="例如 manual_report 或 ReportFlow" />
+          </div>
+          <div class="card">
+            <label for="keyword">關鍵字</label>
+            <input id="keyword" placeholder="例如 screenshot 或 LateInitializationError" />
+          </div>
+          <div class="card">
+            <label>&nbsp;</label>
+            <button id="refresh" type="button">重新整理</button>
+          </div>
+        </div>
+
+        <div class="status" id="status">讀取中...</div>
+      </section>
+
+      <section class="reports" id="reports"></section>
+    </main>
+
+    <script>
+      const SUPABASE_URL = 'https://qerknoxuygoifilxsvqr.supabase.co';
+      const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlcmtub3h1eWdvaWZpbHhzdnFyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyODUyOTYsImV4cCI6MjA4ODg2MTI5Nn0.M8ezQkmXquegj_wjudh8ZhRmmLHwV_y_0DFJBFHC8Qo';
+
+      const statusEl = document.getElementById('status');
+      const reportsEl = document.getElementById('reports');
+      const limitEl = document.getElementById('limit');
+      const sourceEl = document.getElementById('source');
+      const keywordEl = document.getElementById('keyword');
+      const refreshEl = document.getElementById('refresh');
+
+      function escapeHtml(value) {
+        return String(value ?? '')
+          .replaceAll('&', '&amp;')
+          .replaceAll('<', '&lt;')
+          .replaceAll('>', '&gt;')
+          .replaceAll('"', '&quot;')
+          .replaceAll("'", '&#39;');
+      }
+
+      function formatJson(value) {
+        return JSON.stringify(value ?? {}, null, 2);
+      }
+
+      function renderReports(rows) {
+        if (!rows.length) {
+          reportsEl.innerHTML = '<div class="empty">目前沒有符合條件的回報。</div>';
+          return;
+        }
+
+        reportsEl.innerHTML = rows.map((row) => {
+          const context = row.context_json || {};
+          const screenshotUrl = context.screenshot_url || '';
+          const beaconCount = Array.isArray(row.beacon_snapshot_json)
+            ? row.beacon_snapshot_json.length
+            : 0;
+
+          return `
+            <article class="report-card">
+              <div class="report-top">
+                <span class="badge">${escapeHtml(row.error_source)}</span>
+                <strong>${escapeHtml(row.app_version)}+${escapeHtml(row.build_number)}</strong>
+                <span class="meta">${escapeHtml(row.created_at)} | ${escapeHtml(row.platform)} | ${escapeHtml(row.device_model || '')}</span>
+              </div>
+              <div class="row">
+                <div class="kv">
+                  <strong>Beacon 筆數</strong>
+                  <span>${beaconCount}</span>
+                </div>
+                <div class="kv">
+                  <strong>截圖</strong>
+                  <span>${screenshotUrl ? `<a href="${escapeHtml(screenshotUrl)}" target="_blank" rel="noreferrer">開啟截圖</a>` : '無'}</span>
+                </div>
+              </div>
+              <pre>${escapeHtml(row.error_message || '')}</pre>
+              <pre>${escapeHtml(formatJson(context))}</pre>
+              ${screenshotUrl ? `<img class="screenshot" src="${escapeHtml(screenshotUrl)}" alt="report screenshot" />` : ''}
+            </article>
+          `;
+        }).join('');
+      }
+
+      function matchRow(row, source, keyword) {
+        const sourceText = (row.error_source || '').toLowerCase();
+        const haystack = JSON.stringify(row).toLowerCase();
+
+        if (source && !sourceText.includes(source)) {
+          return false;
+        }
+
+        if (keyword && !haystack.includes(keyword)) {
+          return false;
+        }
+
+        return true;
+      }
+
+      async function loadReports() {
+        const limit = Number(limitEl.value || '20');
+        const source = sourceEl.value.trim().toLowerCase();
+        const keyword = keywordEl.value.trim().toLowerCase();
+
+        statusEl.textContent = '讀取中...';
+        reportsEl.innerHTML = '';
+
+        const url = new URL(`${SUPABASE_URL}/rest/v1/app_errors`);
+        url.searchParams.set('select', 'id,created_at,app_version,build_number,platform,device_model,error_source,error_message,context_json,beacon_snapshot_json');
+        url.searchParams.set('order', 'created_at.desc');
+        url.searchParams.set('limit', String(limit));
+
+        try {
+          const response = await fetch(url, {
+            headers: {
+              apikey: SUPABASE_ANON_KEY,
+              Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+            },
+          });
+
+          if (!response.ok) {
+            throw new Error(`Supabase request failed: ${response.status}`);
+          }
+
+          const rows = await response.json();
+          const filtered = rows.filter((row) => matchRow(row, source, keyword));
+          statusEl.textContent = `已載入 ${rows.length} 筆，符合篩選 ${filtered.length} 筆。`;
+          renderReports(filtered);
+        } catch (error) {
+          statusEl.textContent = `讀取失敗：${error}`;
+          reportsEl.innerHTML = '<div class="empty">無法讀取回報資料。</div>';
+        }
+      }
+
+      refreshEl.addEventListener('click', loadReports);
+      limitEl.addEventListener('change', loadReports);
+      sourceEl.addEventListener('change', loadReports);
+      keywordEl.addEventListener('change', loadReports);
+
+      loadReports();
+    </script>
+  </body>
+</html>

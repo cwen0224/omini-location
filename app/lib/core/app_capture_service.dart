@@ -3,6 +3,7 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/scheduler.dart';
 
 class CaptureSnapshot {
   const CaptureSnapshot({
@@ -31,38 +32,46 @@ class AppCaptureService {
 
   Future<CaptureSnapshot?> captureVisibleApp({
     double pixelRatio = 2,
+    int maxAttempts = 3,
   }) async {
-    final boundaryContext = boundaryKey.currentContext;
-    if (boundaryContext == null) {
-      return null;
+    for (var attempt = 0; attempt < maxAttempts; attempt++) {
+      await SchedulerBinding.instance.endOfFrame;
+
+      final boundaryContext = boundaryKey.currentContext;
+      if (boundaryContext == null) {
+        return null;
+      }
+
+      final boundary =
+          boundaryContext.findRenderObject() as RenderRepaintBoundary?;
+      if (boundary == null) {
+        return null;
+      }
+
+      try {
+        final image = await boundary.toImage(pixelRatio: pixelRatio);
+        final byteData = await image.toByteData(
+          format: ui.ImageByteFormat.png,
+        );
+        image.dispose();
+        if (byteData == null) {
+          return null;
+        }
+
+        final snapshot = CaptureSnapshot(
+          bytes: byteData.buffer.asUint8List(),
+          capturedAt: DateTime.now(),
+          width: image.width,
+          height: image.height,
+        );
+        _latestCapture = snapshot;
+        return snapshot;
+      } on StateError {
+        await Future<void>.delayed(const Duration(milliseconds: 32));
+      }
     }
 
-    final boundary =
-        boundaryContext.findRenderObject() as RenderRepaintBoundary?;
-    if (boundary == null) {
-      return null;
-    }
-
-    if (boundary.debugNeedsPaint) {
-      await Future<void>.delayed(const Duration(milliseconds: 32));
-      return captureVisibleApp(pixelRatio: pixelRatio);
-    }
-
-    final image = await boundary.toImage(pixelRatio: pixelRatio);
-    final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
-    image.dispose();
-    if (byteData == null) {
-      return null;
-    }
-
-    final snapshot = CaptureSnapshot(
-      bytes: byteData.buffer.asUint8List(),
-      capturedAt: DateTime.now(),
-      width: image.width,
-      height: image.height,
-    );
-    _latestCapture = snapshot;
-    return snapshot;
+    return null;
   }
 
   void clear() {

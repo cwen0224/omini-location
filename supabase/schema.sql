@@ -157,6 +157,13 @@ for insert
 to anon
 with check (true);
 
+drop policy if exists "allow anon select app_errors" on public.app_errors;
+create policy "allow anon select app_errors"
+on public.app_errors
+for select
+to anon
+using (true);
+
 drop policy if exists "allow anon select beacon_registry" on public.beacon_registry;
 create policy "allow anon select beacon_registry"
 on public.beacon_registry
