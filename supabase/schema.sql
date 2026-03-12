@@ -54,10 +54,95 @@ create table if not exists public.session_media (
   metadata_json jsonb default '{}'::jsonb
 );
 
+create table if not exists public.action_segments (
+  id uuid primary key default gen_random_uuid(),
+  created_at timestamptz not null default now(),
+  session_id uuid not null references public.test_sessions(id) on delete cascade,
+  action_type text not null,
+  started_at timestamptz not null default now(),
+  ended_at timestamptz,
+  target_distance_m double precision,
+  target_heading_deg double precision,
+  expected_behavior text,
+  operator_confirmed boolean default false,
+  metadata_json jsonb default '{}'::jsonb
+);
+
+create table if not exists public.sensor_samples (
+  id uuid primary key default gen_random_uuid(),
+  created_at timestamptz not null default now(),
+  session_id uuid not null references public.test_sessions(id) on delete cascade,
+  segment_id uuid references public.action_segments(id) on delete set null,
+  sample_time timestamptz not null default now(),
+  gps_lat double precision,
+  gps_lng double precision,
+  gps_accuracy double precision,
+  gps_speed double precision,
+  accel_x double precision,
+  accel_y double precision,
+  accel_z double precision,
+  gyro_x double precision,
+  gyro_y double precision,
+  gyro_z double precision,
+  mag_x double precision,
+  mag_y double precision,
+  mag_z double precision,
+  heading double precision,
+  ble_visible_count integer,
+  ble_top_beacons jsonb default '[]'::jsonb,
+  camera_tracking_state text,
+  camera_feature_score double precision,
+  metadata_json jsonb default '{}'::jsonb
+);
+
+create table if not exists public.user_feedback (
+  id uuid primary key default gen_random_uuid(),
+  created_at timestamptz not null default now(),
+  session_id uuid not null references public.test_sessions(id) on delete cascade,
+  segment_id uuid references public.action_segments(id) on delete set null,
+  feedback_type text not null,
+  value text not null,
+  comment text,
+  metadata_json jsonb default '{}'::jsonb
+);
+
+create table if not exists public.ground_truth_points (
+  id uuid primary key default gen_random_uuid(),
+  created_at timestamptz not null default now(),
+  session_id uuid not null references public.test_sessions(id) on delete cascade,
+  segment_id uuid references public.action_segments(id) on delete set null,
+  point_label text not null,
+  map_x double precision,
+  map_y double precision,
+  map_z double precision,
+  heading_deg double precision,
+  source text not null,
+  metadata_json jsonb default '{}'::jsonb
+);
+
+create table if not exists public.derived_metrics (
+  id uuid primary key default gen_random_uuid(),
+  created_at timestamptz not null default now(),
+  session_id uuid not null references public.test_sessions(id) on delete cascade,
+  position_error_m double precision,
+  heading_error_deg double precision,
+  ble_rssi_variance double precision,
+  imu_drift_score double precision,
+  compass_interference_score double precision,
+  camera_relocalization_success_rate double precision,
+  sensor_confidence_curve jsonb default '[]'::jsonb,
+  metadata_json jsonb default '{}'::jsonb
+);
+
 alter table public.app_errors enable row level security;
 alter table public.beacon_registry enable row level security;
 alter table public.test_sessions enable row level security;
 alter table public.session_media enable row level security;
+alter table public.action_segments enable row level security;
+alter table public.sensor_samples enable row level security;
+alter table public.user_feedback enable row level security;
+alter table public.ground_truth_points enable row level security;
+alter table public.derived_metrics enable row level security;
 
 create policy "allow anon insert app_errors"
 on public.app_errors
@@ -104,6 +189,73 @@ with check (true);
 
 create policy "allow anon select session_media"
 on public.session_media
+for select
+to anon
+using (true);
+
+create policy "allow anon insert action_segments"
+on public.action_segments
+for insert
+to anon
+with check (true);
+
+create policy "allow anon update action_segments"
+on public.action_segments
+for update
+to anon
+using (true)
+with check (true);
+
+create policy "allow anon select action_segments"
+on public.action_segments
+for select
+to anon
+using (true);
+
+create policy "allow anon insert sensor_samples"
+on public.sensor_samples
+for insert
+to anon
+with check (true);
+
+create policy "allow anon select sensor_samples"
+on public.sensor_samples
+for select
+to anon
+using (true);
+
+create policy "allow anon insert user_feedback"
+on public.user_feedback
+for insert
+to anon
+with check (true);
+
+create policy "allow anon select user_feedback"
+on public.user_feedback
+for select
+to anon
+using (true);
+
+create policy "allow anon insert ground_truth_points"
+on public.ground_truth_points
+for insert
+to anon
+with check (true);
+
+create policy "allow anon select ground_truth_points"
+on public.ground_truth_points
+for select
+to anon
+using (true);
+
+create policy "allow anon insert derived_metrics"
+on public.derived_metrics
+for insert
+to anon
+with check (true);
+
+create policy "allow anon select derived_metrics"
+on public.derived_metrics
 for select
 to anon
 using (true);

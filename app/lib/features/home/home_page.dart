@@ -4,6 +4,7 @@ import '../../core/error_reporter.dart';
 import '../sensors/sensor_hub_page.dart';
 import '../support/report_issue_page.dart';
 import '../sync/sync_overview_page.dart';
+import '../testing/guided_localization_test_page.dart';
 import '../update/update_service.dart';
 import '../update/update_status_card.dart';
 
@@ -220,6 +221,25 @@ class _HomePageState extends State<HomePage> {
                   Navigator.of(context).push(
                     MaterialPageRoute<void>(
                       builder: (_) => const SyncOverviewPage(),
+                    ),
+                  );
+                },
+              ),
+            ),
+            const SizedBox(height: 12),
+            Card(
+              child: ListTile(
+                title: const Text('引導式定位建檔'),
+                subtitle: const Text('依 App 指示完成動作、記錄 ground truth 與上傳五模組時間序列'),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () {
+                  ErrorReporter.recordInfo(
+                    'Open guided localization test page',
+                    source: 'Navigation',
+                  );
+                  Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (_) => const GuidedLocalizationTestPage(),
                     ),
                   );
                 },

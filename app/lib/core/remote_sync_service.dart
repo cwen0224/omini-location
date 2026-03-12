@@ -4,6 +4,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'beacon_registry.dart';
+import '../features/testing/guided_test_models.dart';
 import 'remote_backend_config.dart';
 
 class RemoteSyncService {
@@ -97,5 +98,112 @@ class RemoteSyncService {
         .single();
 
     return inserted['id'] as String;
+  }
+
+  Future<String> createGuidedTestSession({
+    required String sessionName,
+    required String locationLabel,
+    required Map<String, dynamic> metadata,
+  }) async {
+    return createTestSession(
+      sessionName: sessionName,
+      testType: 'guided_localization_test',
+      metadata: <String, dynamic>{
+        ...metadata,
+        'location_label': locationLabel,
+        'workflow': 'guided_localization_test',
+      },
+    );
+  }
+
+  Future<String> startActionSegment({
+    required String sessionId,
+    required GuidedTestStep step,
+    required Map<String, dynamic> metadata,
+  }) async {
+    final inserted = await client
+        .from('action_segments')
+        .insert(<String, dynamic>{
+          'session_id': sessionId,
+          'action_type': step.actionType,
+          'started_at': DateTime.now().toIso8601String(),
+          'target_distance_m': step.targetDistanceM,
+          'target_heading_deg': step.targetHeadingDeg,
+          'expected_behavior': step.instruction,
+          'metadata_json': <String, dynamic>{
+            'title': step.title,
+            ...metadata,
+          },
+        })
+        .select('id')
+        .single();
+
+    return inserted['id'] as String;
+  }
+
+  Future<void> completeActionSegment({
+    required String segmentId,
+    required bool operatorConfirmed,
+    required Map<String, dynamic> metadata,
+  }) async {
+    await client.from('action_segments').update(<String, dynamic>{
+      'ended_at': DateTime.now().toIso8601String(),
+      'operator_confirmed': operatorConfirmed,
+      'metadata_json': metadata,
+    }).eq('id', segmentId);
+  }
+
+  Future<void> insertSensorSample({
+    required String sessionId,
+    String? segmentId,
+    required SensorSamplePayload sample,
+  }) async {
+    await client.from('sensor_samples').insert(<String, dynamic>{
+      'session_id': sessionId,
+      'segment_id': segmentId,
+      ...sample.toJson(),
+    });
+  }
+
+  Future<void> insertUserFeedback({
+    required String sessionId,
+    String? segmentId,
+    required String feedbackType,
+    required String value,
+    String? comment,
+    Map<String, dynamic> metadata = const <String, dynamic>{},
+  }) async {
+    await client.from('user_feedback').insert(<String, dynamic>{
+      'session_id': sessionId,
+      'segment_id': segmentId,
+      'feedback_type': feedbackType,
+      'value': value,
+      'comment': comment,
+      'metadata_json': metadata,
+    });
+  }
+
+  Future<void> insertGroundTruthPoint({
+    required String sessionId,
+    String? segmentId,
+    required String pointLabel,
+    required String source,
+    double? mapX,
+    double? mapY,
+    double? mapZ,
+    double? headingDeg,
+    Map<String, dynamic> metadata = const <String, dynamic>{},
+  }) async {
+    await client.from('ground_truth_points').insert(<String, dynamic>{
+      'session_id': sessionId,
+      'segment_id': segmentId,
+      'point_label': pointLabel,
+      'map_x': mapX,
+      'map_y': mapY,
+      'map_z': mapZ,
+      'heading_deg': headingDeg,
+      'source': source,
+      'metadata_json': metadata,
+    });
   }
 }
