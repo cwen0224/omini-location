@@ -5,6 +5,7 @@ import '../sensors/sensor_hub_page.dart';
 import '../support/report_issue_page.dart';
 import '../sync/sync_overview_page.dart';
 import '../testing/guided_localization_test_page.dart';
+import '../testing/session_replay_page.dart';
 import '../update/update_service.dart';
 import '../update/update_status_card.dart';
 
@@ -240,6 +241,25 @@ class _HomePageState extends State<HomePage> {
                   Navigator.of(context).push(
                     MaterialPageRoute<void>(
                       builder: (_) => const GuidedLocalizationTestPage(),
+                    ),
+                  );
+                },
+              ),
+            ),
+            const SizedBox(height: 12),
+            Card(
+              child: ListTile(
+                title: const Text('Session Replay / 分析'),
+                subtitle: const Text('從 Supabase 抓最近測試資料，計算 quality scores 與摘要'),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () {
+                  ErrorReporter.recordInfo(
+                    'Open session replay page',
+                    source: 'Navigation',
+                  );
+                  Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (_) => const SessionReplayPage(),
                     ),
                   );
                 },

@@ -5,6 +5,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'beacon_registry.dart';
 import '../features/testing/guided_test_models.dart';
+import '../features/testing/session_replay_models.dart';
 import 'remote_backend_config.dart';
 
 class RemoteSyncService {
@@ -205,5 +206,49 @@ class RemoteSyncService {
       'source': source,
       'metadata_json': metadata,
     });
+  }
+
+  Future<List<SessionReplayRecord>> fetchRecentSessions({
+    int limit = 10,
+  }) async {
+    final rows = await client
+        .from('test_sessions')
+        .select('id, session_name, test_type, created_at, metadata_json')
+        .order('created_at', ascending: false)
+        .limit(limit);
+
+    return (rows as List<dynamic>)
+        .map((item) => SessionReplayRecord.fromJson(item as Map<String, dynamic>))
+        .toList();
+  }
+
+  Future<SessionReplayBundle> fetchSessionReplayBundle(String sessionId) async {
+    final sessionRow = await client
+        .from('test_sessions')
+        .select('id, session_name, test_type, created_at, metadata_json')
+        .eq('id', sessionId)
+        .single();
+    final samplesRows = await client
+        .from('sensor_samples')
+        .select(
+          'sample_time, gps_lat, gps_lng, gps_accuracy, heading, ble_visible_count, camera_tracking_state, metadata_json',
+        )
+        .eq('session_id', sessionId)
+        .order('sample_time');
+    final feedbackRows = await client
+        .from('user_feedback')
+        .select('feedback_type, value, comment')
+        .eq('session_id', sessionId)
+        .order('created_at');
+
+    return SessionReplayBundle(
+      session: SessionReplayRecord.fromJson(sessionRow),
+      samples: (samplesRows as List<dynamic>)
+          .map((item) => SensorSampleRecord.fromJson(item as Map<String, dynamic>))
+          .toList(),
+      feedback: (feedbackRows as List<dynamic>)
+          .map((item) => UserFeedbackRecord.fromJson(item as Map<String, dynamic>))
+          .toList(),
+    );
   }
 }
