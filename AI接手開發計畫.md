@@ -466,6 +466,7 @@ app/
 ## 15. 與需求規格文件關聯
 接手 AI 應同步參考：
 - `需求規格.md`
+- `接手工作流與踩坑紀錄.md`
 
 本文件是開發執行計畫；
 `需求規格.md` 是需求與方向母文件。
@@ -492,3 +493,13 @@ app/
 3. 把 guided session 資料接到 quality score 計算
 4. 實作 handover state machine
 5. 把 EKF skeleton 接到 guided replay / localization pipeline
+
+## 17. 實務交接文件
+若接手者需要的不是產品方向，而是實際維運與發版細節，請優先讀：
+- `接手工作流與踩坑紀錄.md`
+
+該文件記錄的是：
+- 真實發版順序
+- GitHub Releases / GitHub Pages / Supabase 的實際鏈路
+- 已踩過的 `.bat` / build / manifest / 回報流程問題
+- 下一位接手時最容易誤判的地方
