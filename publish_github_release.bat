@@ -7,6 +7,7 @@ set "PUBSPEC=%APP_DIR%\pubspec.yaml"
 set "BUILD_SCRIPT=%ROOT%build_release.bat"
 set "APK_PATH=%APP_DIR%\build\app\outputs\flutter-apk\app-release.apk"
 set "GH_BIN=C:\Program Files\GitHub CLI\gh.exe"
+set "GIT_BIN=git"
 
 if not exist "%GH_BIN%" (
   echo GitHub CLI not found:
@@ -17,6 +18,46 @@ if not exist "%GH_BIN%" (
 if not exist "%PUBSPEC%" (
   echo pubspec.yaml not found:
   echo %PUBSPEC%
+  exit /b 1
+)
+
+%GIT_BIN% rev-parse --is-inside-work-tree >nul 2>&1
+if errorlevel 1 (
+  echo This script must be run inside the git repository.
+  exit /b 1
+)
+
+%GIT_BIN% diff --quiet -- app/pubspec.yaml docs/version.json docs/index.html
+if errorlevel 1 (
+  echo Version files have uncommitted changes.
+  echo Commit and push app/pubspec.yaml, docs/version.json, and docs/index.html first.
+  exit /b 1
+)
+
+%GIT_BIN% diff --cached --quiet -- app/pubspec.yaml docs/version.json docs/index.html
+if errorlevel 1 (
+  echo Version files are staged but not committed.
+  echo Commit and push app/pubspec.yaml, docs/version.json, and docs/index.html first.
+  exit /b 1
+)
+
+for /f "delims=" %%L in ('%GIT_BIN% rev-parse HEAD 2^>nul') do set "LOCAL_HEAD=%%L"
+for /f "delims=" %%R in ('%GIT_BIN% rev-parse @{u} 2^>nul') do set "UPSTREAM_HEAD=%%R"
+
+if not defined LOCAL_HEAD (
+  echo Failed to resolve local git HEAD.
+  exit /b 1
+)
+
+if not defined UPSTREAM_HEAD (
+  echo Failed to resolve upstream branch.
+  echo Push this branch to origin first.
+  exit /b 1
+)
+
+if /I not "%LOCAL_HEAD%"=="%UPSTREAM_HEAD%" (
+  echo Local branch is not pushed to upstream.
+  echo Push app/pubspec.yaml, docs/version.json, and docs/index.html before publishing release assets.
   exit /b 1
 )
 
