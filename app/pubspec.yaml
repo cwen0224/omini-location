@@ -1,7 +1,7 @@
 name: human_rights_museum_app
 description: Human Rights Museum App prototype for sensor-based indoor/outdoor navigation.
 publish_to: "none"
-version: 0.1.13+14
+version: 0.1.14+15
 
 environment:
   sdk: ">=3.3.0 <4.0.0"

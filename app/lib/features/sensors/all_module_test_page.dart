@@ -44,6 +44,11 @@ class _AllModuleTestPageState extends State<AllModuleTestPage> {
   String _adapterState = '未知';
   String _error = '';
   bool _initializing = false;
+  Timer? _zeroingTimer;
+  bool _zeroing = false;
+  bool _beaconRemovalConfirmed = false;
+  int _zeroingRemainingSeconds = 0;
+  String _preflightStatus = '尚未歸零';
 
   @override
   void initState() {
@@ -65,6 +70,7 @@ class _AllModuleTestPageState extends State<AllModuleTestPage> {
     _accelerometerSubscription?.cancel();
     _gyroscopeSubscription?.cancel();
     _magnetometerSubscription?.cancel();
+    _zeroingTimer?.cancel();
     _cameraController?.dispose();
     _motionTracker.dispose();
     super.dispose();
@@ -290,6 +296,45 @@ class _AllModuleTestPageState extends State<AllModuleTestPage> {
   List<MovementPoint> get _mapPoints =>
       _gpsTrack.length >= 2 ? _gpsTrack : _motionTracker.points;
 
+  Future<void> _startZeroing() async {
+    if (_zeroing || _initializing || !_beaconRemovalConfirmed) {
+      return;
+    }
+
+    setState(() {
+      _zeroing = true;
+      _zeroingRemainingSeconds = 10;
+      _preflightStatus = '歸零中：請將手機靜置 10 秒';
+      _gpsTrack.clear();
+      _trackAccumulator.reset();
+      _motionTracker.reset();
+      _error = '';
+    });
+
+    _zeroingTimer?.cancel();
+    _zeroingTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      final nextRemaining = 10 - timer.tick;
+      if (nextRemaining <= 0) {
+        timer.cancel();
+        if (!mounted) {
+          return;
+        }
+        setState(() {
+          _zeroing = false;
+          _zeroingRemainingSeconds = 0;
+          _preflightStatus = '歸零完成，可開始觀察全模組資料';
+        });
+        return;
+      }
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _zeroingRemainingSeconds = nextRemaining;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final bottomInset = MediaQuery.paddingOf(context).bottom + 24;
@@ -315,6 +360,86 @@ class _AllModuleTestPageState extends State<AllModuleTestPage> {
                     const SizedBox(height: 8),
                     const Text(
                       '同時啟動 GPS、IMU/羅盤、BLE、Camera，用一頁觀察所有定位相關參數與總移動地圖。',
+                    ),
+                    const SizedBox(height: 16),
+                    DecoratedBox(
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(14),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              '前置檢查',
+                              style: Theme.of(context).textTheme.titleSmall,
+                            ),
+                            const SizedBox(height: 8),
+                            const Text(
+                              '開始觀察前，請先移除自己身上的 Beacon、藍牙追蹤器或測試吊牌，再做 10 秒歸零，避免把人體攜帶訊號與手部晃動當成環境定位基準。',
+                            ),
+                            const SizedBox(height: 12),
+                            CheckboxListTile(
+                              contentPadding: EdgeInsets.zero,
+                              value: _beaconRemovalConfirmed,
+                              onChanged: _initializing || _zeroing
+                                  ? null
+                                  : (value) {
+                                      setState(() {
+                                        _beaconRemovalConfirmed = value ?? false;
+                                      });
+                                    },
+                              title: const Text('我已移除自己身上的所有 Beacon / 藍牙追蹤器'),
+                              controlAffinity: ListTileControlAffinity.leading,
+                            ),
+                            Wrap(
+                              spacing: 12,
+                              runSpacing: 12,
+                              children: [
+                                FilledButton.tonal(
+                                  onPressed: _beaconRemovalConfirmed && !_initializing && !_zeroing
+                                      ? _startZeroing
+                                      : null,
+                                  child: Text(
+                                    _zeroing
+                                        ? '歸零中 ${_zeroingRemainingSeconds}s'
+                                        : '開始 10 秒歸零',
+                                  ),
+                                ),
+                                Chip(label: Text(_preflightStatus)),
+                              ],
+                            ),
+                            if (_zeroing) ...[
+                              const SizedBox(height: 12),
+                              DecoratedBox(
+                                decoration: BoxDecoration(
+                                  color: Theme.of(context).colorScheme.primaryContainer,
+                                  borderRadius: BorderRadius.circular(16),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(16),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        '歸零進行中',
+                                        style: Theme.of(context).textTheme.titleMedium,
+                                      ),
+                                      const SizedBox(height: 8),
+                                      Text(
+                                        '請保持手機靜止，剩餘 ${_zeroingRemainingSeconds} 秒',
+                                        style: Theme.of(context).textTheme.headlineSmall,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ],
+                        ),
+                      ),
                     ),
                     const SizedBox(height: 16),
                     Wrap(

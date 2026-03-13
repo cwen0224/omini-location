@@ -76,10 +76,16 @@ class _GuidedLocalizationTestPageState extends State<GuidedLocalizationTestPage>
   String? _segmentId;
   int _stepIndex = 0;
   Timer? _sampleTimer;
+  Timer? _zeroingTimer;
   bool _preparing = false;
   bool _recording = false;
+  bool _zeroing = false;
+  bool _beaconRemovalConfirmed = false;
+  int _zeroingRemainingSeconds = 0;
   String _status = '尚未開始';
   String _error = '';
+  final List<_ZeroingSample> _zeroingSamples = <_ZeroingSample>[];
+  _ZeroingSummary? _zeroingSummary;
 
   @override
   void initState() {
@@ -104,6 +110,7 @@ class _GuidedLocalizationTestPageState extends State<GuidedLocalizationTestPage>
     _gyroscopeSubscription?.cancel();
     _magnetometerSubscription?.cancel();
     _sampleTimer?.cancel();
+    _zeroingTimer?.cancel();
     _cameraController?.dispose();
     _motionTracker.dispose();
     _locationController.dispose();
@@ -246,6 +253,19 @@ class _GuidedLocalizationTestPageState extends State<GuidedLocalizationTestPage>
   }
 
   Future<void> _startSession() async {
+    if (!_beaconRemovalConfirmed) {
+      setState(() {
+        _error = '開始測試前，請先確認已移除自己身上的所有 Beacon 或藍牙追蹤器。';
+      });
+      return;
+    }
+    if (_zeroingSummary == null) {
+      setState(() {
+        _error = '開始測試前，請先執行 10 秒歸零。';
+      });
+      return;
+    }
+
     setState(() {
       _recording = true;
       _status = '建立 session 中...';
@@ -262,6 +282,8 @@ class _GuidedLocalizationTestPageState extends State<GuidedLocalizationTestPage>
         metadata: <String, dynamic>{
           'step_count': _steps.length,
           'created_from': 'guided_localization_test_page',
+          'beacon_removal_confirmed': _beaconRemovalConfirmed,
+          'zeroing_summary': _zeroingSummary!.toJson(),
         },
       );
 
@@ -484,6 +506,80 @@ class _GuidedLocalizationTestPageState extends State<GuidedLocalizationTestPage>
   List<MovementPoint> get _mapPoints =>
       _gpsTrack.length >= 2 ? _gpsTrack : _motionTracker.points;
 
+  Future<void> _startZeroing() async {
+    if (_zeroing || _recording) {
+      return;
+    }
+
+    setState(() {
+      _error = '';
+      _zeroing = true;
+      _zeroingRemainingSeconds = 10;
+      _zeroingSummary = null;
+      _zeroingSamples.clear();
+      _gpsTrack.clear();
+      _trackAccumulator.reset();
+      _motionTracker.reset();
+      _status = '歸零中：請將手機靜置 10 秒';
+    });
+
+    _captureZeroingSample();
+    _zeroingTimer?.cancel();
+    _zeroingTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      _captureZeroingSample();
+      final nextRemaining = 10 - timer.tick;
+      if (nextRemaining <= 0) {
+        timer.cancel();
+        _finishZeroing();
+        return;
+      }
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _zeroingRemainingSeconds = nextRemaining;
+      });
+    });
+  }
+
+  void _captureZeroingSample() {
+    _zeroingSamples.add(
+      _ZeroingSample(
+        gpsAccuracy: _position?.accuracy,
+        headingDeg: _headingDegrees(),
+        accelMagnitude: _accelerometer == null
+            ? null
+            : math.sqrt(
+                _accelerometer!.x * _accelerometer!.x +
+                    _accelerometer!.y * _accelerometer!.y +
+                    _accelerometer!.z * _accelerometer!.z,
+              ),
+        gyroMagnitude: _gyroscope == null
+            ? null
+            : math.sqrt(
+                _gyroscope!.x * _gyroscope!.x +
+                    _gyroscope!.y * _gyroscope!.y +
+                    _gyroscope!.z * _gyroscope!.z,
+              ),
+        bleVisibleCount: _scanResults.length,
+      ),
+    );
+  }
+
+  void _finishZeroing() {
+    final samples = List<_ZeroingSample>.from(_zeroingSamples);
+    final summary = _ZeroingSummary.fromSamples(samples);
+    if (!mounted) {
+      return;
+    }
+    setState(() {
+      _zeroing = false;
+      _zeroingRemainingSeconds = 0;
+      _zeroingSummary = summary;
+      _status = '歸零完成，可開始 session';
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final bottomInset = MediaQuery.paddingOf(context).bottom + 24;
@@ -511,12 +607,100 @@ class _GuidedLocalizationTestPageState extends State<GuidedLocalizationTestPage>
                       ),
                     ),
                     const SizedBox(height: 16),
+                    DecoratedBox(
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(14),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              '前置檢查',
+                              style: Theme.of(context).textTheme.titleSmall,
+                            ),
+                            const SizedBox(height: 8),
+                            const Text(
+                              '開始前請移除自己身上的所有 Beacon、藍牙追蹤器或測試吊牌，避免把人體攜帶訊號誤判成環境定位基準。接著將手機平放或自然持握靜置 10 秒，建立歸零參考。',
+                            ),
+                            const SizedBox(height: 12),
+                            CheckboxListTile(
+                              contentPadding: EdgeInsets.zero,
+                              value: _beaconRemovalConfirmed,
+                              onChanged: _recording || _zeroing
+                                  ? null
+                                  : (value) {
+                                      setState(() {
+                                        _beaconRemovalConfirmed = value ?? false;
+                                      });
+                                    },
+                              title: const Text('我已移除自己身上的所有 Beacon / 藍牙追蹤器'),
+                              controlAffinity: ListTileControlAffinity.leading,
+                            ),
+                            const SizedBox(height: 8),
+                            Wrap(
+                              spacing: 12,
+                              runSpacing: 12,
+                              children: [
+                                FilledButton.tonal(
+                                  onPressed: _preparing || _recording || _zeroing
+                                      ? null
+                                      : _startZeroing,
+                                  child: Text(
+                                    _zeroing
+                                        ? '歸零中 ${_zeroingRemainingSeconds}s'
+                                        : '開始 10 秒歸零',
+                                  ),
+                                ),
+                                if (_zeroingSummary != null)
+                                  Chip(
+                                    label: Text(
+                                      'GPS ±${_zeroingSummary!.averageGpsAccuracyM.toStringAsFixed(1)}m / BLE ${_zeroingSummary!.averageBleVisibleCount.toStringAsFixed(1)} / Heading ${_zeroingSummary!.averageHeadingDeg.toStringAsFixed(1)}°',
+                                    ),
+                                  ),
+                              ],
+                            ),
+                            if (_zeroing) ...[
+                              const SizedBox(height: 12),
+                              DecoratedBox(
+                                decoration: BoxDecoration(
+                                  color: Theme.of(context).colorScheme.primaryContainer,
+                                  borderRadius: BorderRadius.circular(16),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(16),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        '歸零進行中',
+                                        style: Theme.of(context).textTheme.titleMedium,
+                                      ),
+                                      const SizedBox(height: 8),
+                                      Text(
+                                        '請保持手機靜止，剩餘 ${_zeroingRemainingSeconds} 秒',
+                                        style: Theme.of(context).textTheme.headlineSmall,
+                                      ),
+                                      const SizedBox(height: 8),
+                                      const Text('倒數結束前不要移動手機，也不要靠近自己身上的 Beacon。'),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
                     Wrap(
                       spacing: 12,
                       runSpacing: 12,
                       children: [
                         FilledButton(
-                          onPressed: _preparing || _recording ? null : _startSession,
+                          onPressed: _preparing || _recording || _zeroing ? null : _startSession,
                           child: Text(_recording ? '錄製中...' : '開始測試 Session'),
                         ),
                         OutlinedButton(
@@ -641,5 +825,82 @@ class _GuidedLocalizationTestPageState extends State<GuidedLocalizationTestPage>
         ),
       ),
     );
+  }
+}
+
+class _ZeroingSample {
+  const _ZeroingSample({
+    this.gpsAccuracy,
+    this.headingDeg,
+    this.accelMagnitude,
+    this.gyroMagnitude,
+    required this.bleVisibleCount,
+  });
+
+  final double? gpsAccuracy;
+  final double? headingDeg;
+  final double? accelMagnitude;
+  final double? gyroMagnitude;
+  final int bleVisibleCount;
+}
+
+class _ZeroingSummary {
+  const _ZeroingSummary({
+    required this.averageGpsAccuracyM,
+    required this.averageHeadingDeg,
+    required this.averageAccelMagnitude,
+    required this.averageGyroMagnitude,
+    required this.averageBleVisibleCount,
+    required this.sampleCount,
+  });
+
+  factory _ZeroingSummary.fromSamples(List<_ZeroingSample> samples) {
+    double averageNullable(Iterable<double?> values) {
+      final nonNull = values.whereType<double>().toList();
+      if (nonNull.isEmpty) {
+        return 0;
+      }
+      return nonNull.reduce((left, right) => left + right) / nonNull.length;
+    }
+
+    final averageBle = samples.isEmpty
+        ? 0.0
+        : samples.map((sample) => sample.bleVisibleCount).reduce((left, right) => left + right) /
+            samples.length;
+
+    return _ZeroingSummary(
+      averageGpsAccuracyM: averageNullable(
+        samples.map((sample) => sample.gpsAccuracy),
+      ),
+      averageHeadingDeg: averageNullable(
+        samples.map((sample) => sample.headingDeg),
+      ),
+      averageAccelMagnitude: averageNullable(
+        samples.map((sample) => sample.accelMagnitude),
+      ),
+      averageGyroMagnitude: averageNullable(
+        samples.map((sample) => sample.gyroMagnitude),
+      ),
+      averageBleVisibleCount: averageBle,
+      sampleCount: samples.length,
+    );
+  }
+
+  final double averageGpsAccuracyM;
+  final double averageHeadingDeg;
+  final double averageAccelMagnitude;
+  final double averageGyroMagnitude;
+  final double averageBleVisibleCount;
+  final int sampleCount;
+
+  Map<String, dynamic> toJson() {
+    return <String, dynamic>{
+      'average_gps_accuracy_m': averageGpsAccuracyM,
+      'average_heading_deg': averageHeadingDeg,
+      'average_accel_magnitude': averageAccelMagnitude,
+      'average_gyro_magnitude': averageGyroMagnitude,
+      'average_ble_visible_count': averageBleVisibleCount,
+      'sample_count': sampleCount,
+    };
   }
 }
