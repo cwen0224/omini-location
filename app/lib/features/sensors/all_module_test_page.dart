@@ -35,6 +35,7 @@ class _AllModuleTestPageState extends State<AllModuleTestPage> {
   MagnetometerEvent? _magnetometer;
   List<ScanResult> _scanResults = const [];
   final List<MovementPoint> _gpsTrack = <MovementPoint>[];
+  final GpsTrackAccumulator _trackAccumulator = GpsTrackAccumulator();
 
   String _gpsPermission = '未檢查';
   String _cameraPermission = '未檢查';
@@ -132,13 +133,11 @@ class _AllModuleTestPageState extends State<AllModuleTestPage> {
         setState(() {
           _position = position;
         });
-        _gpsTrack.add(
-          MovementPoint(
-            x: position.longitude,
-            y: position.latitude,
-            headingDegrees: position.heading.isFinite ? position.heading : null,
-          ),
-        );
+        final point = _trackAccumulator.add(position);
+        if (point == null) {
+          return;
+        }
+        _gpsTrack.add(point);
         if (_gpsTrack.length > 120) {
           _gpsTrack.removeAt(0);
         }
@@ -330,6 +329,7 @@ class _AllModuleTestPageState extends State<AllModuleTestPage> {
                           onPressed: () {
                             setState(() {
                               _gpsTrack.clear();
+                              _trackAccumulator.reset();
                               _motionTracker.reset();
                             });
                           },

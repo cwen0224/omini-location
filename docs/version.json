@@ -1,14 +1,14 @@
 {
-  "app_version": "0.1.12",
-  "build_number": 13,
+  "app_version": "0.1.13",
+  "build_number": 14,
   "release_notes": [
-    "修正問題回報截圖在 release 模式下失敗的問題",
-    "新增 GitHub Pages 問題回報查看頁，可直接查看 Supabase 回報",
-    "改善 release build 腳本，畫面可直接看到建置進度"
+    "修正人物移動地圖比例失真，改為等比例繪製軌跡",
+    "GPS 軌跡改用本地公尺座標並加入抖動過濾、跳點抑制與平滑",
+    "改善 IMU 相對移動與 session replay 推估，降低單軸亂飄"
   ],
-  "apk_url": "https://github.com/cwen0224/omini-location/releases/download/v0.1.12%2B13/app-release.apk",
+  "apk_url": "https://github.com/cwen0224/omini-location/releases/download/v0.1.13%2B14/app-release.apk",
   "download_page_url": "https://cwen0224.github.io/omini-location/",
   "force_update": false,
-  "published_at": "2026-03-13T00:15:00+08:00",
+  "published_at": "2026-03-13T23:10:00+08:00",
   "content_version": "2026.03.12.10"
 }

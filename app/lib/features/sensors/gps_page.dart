@@ -24,6 +24,7 @@ class _GpsPageState extends State<GpsPage> {
   String _error = '';
   bool _loading = false;
   final List<MovementPoint> _track = <MovementPoint>[];
+  final GpsTrackAccumulator _trackAccumulator = GpsTrackAccumulator();
 
   @override
   void initState() {
@@ -110,13 +111,11 @@ class _GpsPageState extends State<GpsPage> {
   }
 
   void _appendTrack(Position position) {
-    _track.add(
-      MovementPoint(
-        x: position.longitude,
-        y: position.latitude,
-        headingDegrees: position.heading.isFinite ? position.heading : null,
-      ),
-    );
+    final point = _trackAccumulator.add(position);
+    if (point == null) {
+      return;
+    }
+    _track.add(point);
     if (_track.length > 120) {
       _track.removeAt(0);
     }

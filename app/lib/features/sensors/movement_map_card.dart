@@ -97,10 +97,15 @@ class _MovementMapPainter extends CustomPainter {
     final usableHeight = math.max(size.height - padding * 2, 1);
     final rangeX = math.max(maxX - minX, 1);
     final rangeY = math.max(maxY - minY, 1);
+    final scale = math.min(usableWidth / rangeX, usableHeight / rangeY);
+    final contentWidth = rangeX * scale;
+    final contentHeight = rangeY * scale;
+    final offsetX = padding + (usableWidth - contentWidth) / 2;
+    final offsetY = padding + (usableHeight - contentHeight) / 2;
 
     Offset project(MovementPoint point) {
-      final x = padding + ((point.x - minX) / rangeX) * usableWidth;
-      final y = size.height - padding - ((point.y - minY) / rangeY) * usableHeight;
+      final x = offsetX + (point.x - minX) * scale;
+      final y = size.height - offsetY - (point.y - minY) * scale;
       return Offset(x, y);
     }
 

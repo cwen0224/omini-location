@@ -70,6 +70,7 @@ class _GuidedLocalizationTestPageState extends State<GuidedLocalizationTestPage>
   MagnetometerEvent? _magnetometer;
   List<ScanResult> _scanResults = const <ScanResult>[];
   final List<MovementPoint> _gpsTrack = <MovementPoint>[];
+  final GpsTrackAccumulator _trackAccumulator = GpsTrackAccumulator();
 
   String? _sessionId;
   String? _segmentId;
@@ -154,13 +155,11 @@ class _GuidedLocalizationTestPageState extends State<GuidedLocalizationTestPage>
       setState(() {
         _position = position;
       });
-      _gpsTrack.add(
-        MovementPoint(
-          x: position.longitude,
-          y: position.latitude,
-          headingDegrees: position.heading.isFinite ? position.heading : null,
-        ),
-      );
+      final point = _trackAccumulator.add(position);
+      if (point == null) {
+        return;
+      }
+      _gpsTrack.add(point);
       if (_gpsTrack.length > 120) {
         _gpsTrack.removeAt(0);
       }
@@ -251,6 +250,9 @@ class _GuidedLocalizationTestPageState extends State<GuidedLocalizationTestPage>
       _recording = true;
       _status = '建立 session 中...';
       _error = '';
+      _gpsTrack.clear();
+      _trackAccumulator.reset();
+      _motionTracker.reset();
     });
 
     try {
