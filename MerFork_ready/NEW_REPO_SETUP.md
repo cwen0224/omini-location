@@ -23,6 +23,14 @@
 .\scripts\bootstrap-new-repo.ps1 -TargetRoot "C:\path\to\new-repo" -InitializeGit
 ```
 
+BAT 會先問你：
+1. 新專案名稱
+2. 父資料夾路徑
+3. 是否初始化 git
+
+最後會自動建立 `父資料夾\專案名稱` 這個目錄。
+如果專案名稱含空格，BAT 會自動把空格轉成 `-`，避免 Windows 路徑出問題。
+
 ## 不要這樣做
 - 不要直接在舊 repo 內另起一套完全不同的產品線
 - 不要共用同一份 `version.json` 或 release asset 規則
