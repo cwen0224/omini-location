@@ -59,6 +59,7 @@ $copyMap = @(
   @{ Source = 'WHY_MERFORK.md'; Target = 'WHY_MERFORK.md' },
   @{ Source = 'ERROR_TRIAGE.md'; Target = 'ERROR_TRIAGE.md' },
   @{ Source = 'FAILURE_RECOVERY.md'; Target = 'FAILURE_RECOVERY.md' },
+  @{ Source = 'SUPABASE_AI_ACCESS.md'; Target = 'SUPABASE_AI_ACCESS.md' },
   @{ Source = 'gitignore.template'; Target = '.gitignore' },
   @{ Source = 'scripts/bootstrap-new-repo.ps1'; Target = 'scripts/bootstrap-new-repo.ps1' }
 )

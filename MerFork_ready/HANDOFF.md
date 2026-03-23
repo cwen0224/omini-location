@@ -22,6 +22,7 @@
 - `KNOWN_ISSUES.md`
 - `ERROR_TRIAGE.md`
 - `FAILURE_RECOVERY.md`
+- `SUPABASE_AI_ACCESS.md`
 
 ## 建議先收集的資訊
 - 新專案名稱
@@ -46,6 +47,7 @@ MerFork 的核心優勢是：
 - 手機端可以從 Pages 一鍵取得新版
 - 發版後本機 APK 會自動清掉，避免工作區堆滿安裝包
 - Supabase 報錯可以直接轉成 AI 修正計畫
+- AI 可以直接抓 Supabase 報錯，不必靠人類 copy/paste
 
 流程至少要包含：
 - 本機 build
@@ -63,3 +65,4 @@ MerFork 的核心優勢是：
 - 若是新的人魚專案，先在 GitHub 建新 repo，再把這套模板複製過去
 - 如果你是 AI，先讀 `AI_FOLDER_START.md`，不要先找生成器
 - 如果你看到 Supabase 的 `app_errors`，先讀 `ERROR_TRIAGE.md` 再開始修
+- 如果你要直接抓 Supabase，先讀 `SUPABASE_AI_ACCESS.md`

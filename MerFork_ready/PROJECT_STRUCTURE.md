@@ -19,6 +19,7 @@ MerFork_ready/
   WHY_MERFORK.md
   ERROR_TRIAGE.md
   FAILURE_RECOVERY.md
+  SUPABASE_AI_ACCESS.md
   gitignore.template
   notes/
   scripts/
@@ -37,6 +38,7 @@ MerFork_ready/
 - `WHY_MERFORK.md`：MerFork 為什麼能快速更新 App
 - `ERROR_TRIAGE.md`：怎麼把 Supabase 報錯轉成修正計畫
 - `FAILURE_RECOVERY.md`：發版或回報失敗時的復原順序
+- `SUPABASE_AI_ACCESS.md`：如何讓 AI 直接抓 Supabase 報錯
 - `gitignore.template`：複製到新 repo 後的根目錄 `.gitignore`
 - `notes/`：實務筆記、踩坑、決策記錄
 - `scripts/`：build、publish、cleanup 等固定腳本

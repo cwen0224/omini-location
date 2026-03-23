@@ -58,8 +58,10 @@
 - 先打開 `docs/report-viewer.html`
 - 複製 AI 修復摘要
 - 再把 `ERROR_TRIAGE.md` 裡的流程交給 AI 執行
+- 如果你想讓 AI 直接抓 Supabase，先讀 `SUPABASE_AI_ACCESS.md`
 
 ## 如果你是在修現有專案
 - 先看 `docs/report-viewer.html`
 - 再看 `ERROR_TRIAGE.md`
+- 再看 `SUPABASE_AI_ACCESS.md`
 - 先從最新一筆 `app_errors` 開始，不要從最舊資料回推

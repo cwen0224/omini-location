@@ -14,6 +14,7 @@
 6. 如果你要知道 MerFork 真正為什麼快，先讀 [`WHY_MERFORK.md`](./WHY_MERFORK.md)
 7. 如果你要把 Supabase 報錯變成修正計畫，先讀 [`ERROR_TRIAGE.md`](./ERROR_TRIAGE.md)
 8. 如果你要處理發版失敗，先讀 [`FAILURE_RECOVERY.md`](./FAILURE_RECOVERY.md)
+9. 如果你要讓 AI 自己抓 Supabase 報錯，先讀 [`SUPABASE_AI_ACCESS.md`](./SUPABASE_AI_ACCESS.md)
 
 ## 先用這個腳本
 - 或 [`scripts/bootstrap-new-repo.ps1`](./scripts/bootstrap-new-repo.ps1)
