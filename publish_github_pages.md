@@ -1,6 +1,6 @@
 # GitHub Pages 發布說明
 
-這份說明屬於 `Merfolk Protocol` 的一部分，負責 GitHub Pages 端的下載頁與 APK 連結同步。
+這份說明屬於 `MerFork Protocol` 的一部分，負責 GitHub Pages 端的下載頁與 APK 連結同步。
 
 目前已建立：
 - `docs/index.html`：下載頁

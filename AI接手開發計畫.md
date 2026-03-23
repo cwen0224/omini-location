@@ -1,7 +1,7 @@
 # 人權博物館APP AI接手開發計畫
 
-## 0. Merfolk Protocol
-本專案的更新、發版、問題回報、版本同步與驗證流程，統一稱為 `Merfolk Protocol`。
+## 0. MerFork Protocol
+本專案的更新、發版、問題回報、版本同步與驗證流程，統一稱為 `MerFork Protocol`。
 
 這個名稱不是單一腳本，而是整套可重複執行的工作流，包含：
 - 本機 build
@@ -10,7 +10,7 @@
 - GitHub Pages 下載頁更新
 - Supabase 問題回報與查看頁
 
-接手者若在文件、聊天室或 commit 中看到 `Merfolk Protocol`，一律視為這整條更新鏈，不要拆成零散步驟理解。
+接手者若在文件、聊天室或 commit 中看到 `MerFork Protocol`，一律視為這整條更新鏈，不要拆成零散步驟理解。
 
 ## 1. 文件目的
 本文件提供後續 AI 助手或工程師直接接手開發「人權博物館APP」時所需的完整工作脈絡、技術決策方向、開發順序與驗收基準。
