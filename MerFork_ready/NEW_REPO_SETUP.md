@@ -17,6 +17,8 @@
 7. 把新 repo 的網址寫回文件
 
 ## 建議啟動方式
+雙擊根目錄的 `create_merfork_project.bat`，或用 PowerShell 直接呼叫：
+
 ```powershell
 .\scripts\bootstrap-new-repo.ps1 -TargetRoot "C:\path\to\new-repo" -InitializeGit
 ```

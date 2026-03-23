@@ -4,6 +4,7 @@
 
 ```text
 MerFork_ready/
+  create_merfork_project.bat
   README.md
   START_HERE.md
   HANDOFF.md
@@ -25,6 +26,7 @@ MerFork_ready/
 - `RELEASE_NOTES.md`：版本與更新紀錄
 - `KNOWN_ISSUES.md`：已知問題與風險
 - `NEW_REPO_SETUP.md`：如何建立獨立的新 repo
+- `create_merfork_project.bat`：雙擊即可生成新 repo 模板
 - `gitignore.template`：複製到新 repo 後的根目錄 `.gitignore`
 - `notes/`：實務筆記、踩坑、決策記錄
 - `scripts/`：build、publish、cleanup 等固定腳本
