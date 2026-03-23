@@ -9,6 +9,7 @@
 - GitHub Release 發版
 - GitHub Pages 下載頁更新
 - Supabase 問題回報與查看頁
+- 新專案模板入口：`MerFork_ready/`
 
 接手者若在文件、聊天室或 commit 中看到 `MerFork Protocol`，一律視為這整條更新鏈，不要拆成零散步驟理解。
 
@@ -509,6 +510,7 @@ app/
 ## 17. 實務交接文件
 若接手者需要的不是產品方向，而是實際維運與發版細節，請優先讀：
 - `接手工作流與踩坑紀錄.md`
+- `MerFork_ready/README.md`
 
 該文件記錄的是：
 - 真實發版順序
