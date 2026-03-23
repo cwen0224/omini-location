@@ -12,6 +12,8 @@ MerFork_ready/
   PROJECT_BRIEF.md
   RELEASE_NOTES.md
   KNOWN_ISSUES.md
+  NEW_REPO_SETUP.md
+  gitignore.template
   notes/
   scripts/
   docs/
@@ -22,6 +24,8 @@ MerFork_ready/
 - `INITIAL_CHECKLIST.md`：新專案啟動檢查清單
 - `RELEASE_NOTES.md`：版本與更新紀錄
 - `KNOWN_ISSUES.md`：已知問題與風險
+- `NEW_REPO_SETUP.md`：如何建立獨立的新 repo
+- `gitignore.template`：複製到新 repo 後的根目錄 `.gitignore`
 - `notes/`：實務筆記、踩坑、決策記錄
 - `scripts/`：build、publish、cleanup 等固定腳本
 - `docs/`：下載頁、說明頁、回報查看頁或其他對外文件

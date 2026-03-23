@@ -10,6 +10,10 @@
 2. [`HANDOFF.md`](./HANDOFF.md)
 3. [`PROJECT_STRUCTURE.md`](./PROJECT_STRUCTURE.md)
 
+## 先用這個腳本
+- [`scripts/bootstrap-new-repo.ps1`](./scripts/bootstrap-new-repo.ps1)
+- 它可以把這個模板複製到你指定的新 repo 根目錄，並可選擇直接初始化 git
+
 ## 這個資料夾的使用方式
 - 把新專案的產品目標、技術選型、發版策略先寫進來
 - 把所有固定流程寫成可重複執行的步驟

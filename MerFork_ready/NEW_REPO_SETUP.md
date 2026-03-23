@@ -9,11 +9,17 @@
 
 ## 建議流程
 1. 在 GitHub 建立新的空 repo
-2. 把 `MerFork_ready/` 內的模板複製到新 repo 根目錄
-3. 重新寫 `PROJECT_BRIEF.md`
-4. 重新寫 `HANDOFF.md`
-5. 重新建立 build / release / update 流程
-6. 把新 repo 的網址寫回文件
+2. 在本機把這份模板複製到新 repo 根目錄
+3. 先跑 `scripts/bootstrap-new-repo.ps1`，把模板檔落到新 repo
+4. 重新寫 `PROJECT_BRIEF.md`
+5. 重新寫 `HANDOFF.md`
+6. 重新建立 build / release / update 流程
+7. 把新 repo 的網址寫回文件
+
+## 建議啟動方式
+```powershell
+.\scripts\bootstrap-new-repo.ps1 -TargetRoot "C:\path\to\new-repo" -InitializeGit
+```
 
 ## 不要這樣做
 - 不要直接在舊 repo 內另起一套完全不同的產品線

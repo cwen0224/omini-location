@@ -1,0 +1,25 @@
+# Flutter / Dart
+.dart_tool/
+.packages
+pubspec.lock
+build/
+
+# Android / Gradle
+.gradle/
+android/.gradle/
+android/local.properties
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# Logs and local state
+logs/
+*.log
+
+# Local tooling
+.gcloud/
+# Misc
+*.tmp
+*.bak
