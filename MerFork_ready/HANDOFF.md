@@ -20,6 +20,8 @@
 - `INITIAL_CHECKLIST.md`
 - `RELEASE_NOTES.md`
 - `KNOWN_ISSUES.md`
+- `ERROR_TRIAGE.md`
+- `FAILURE_RECOVERY.md`
 
 ## 建議先收集的資訊
 - 新專案名稱
@@ -43,6 +45,7 @@ MerFork 的核心優勢是：
 - GitHub Releases 只負責 APK 交付
 - 手機端可以從 Pages 一鍵取得新版
 - 發版後本機 APK 會自動清掉，避免工作區堆滿安裝包
+- Supabase 報錯可以直接轉成 AI 修正計畫
 
 流程至少要包含：
 - 本機 build
@@ -59,3 +62,4 @@ MerFork 的核心優勢是：
 - 每次改動要同步更新 `RELEASE_NOTES.md`
 - 若是新的人魚專案，先在 GitHub 建新 repo，再把這套模板複製過去
 - 如果你是 AI，先讀 `AI_FOLDER_START.md`，不要先找生成器
+- 如果你看到 Supabase 的 `app_errors`，先讀 `ERROR_TRIAGE.md` 再開始修

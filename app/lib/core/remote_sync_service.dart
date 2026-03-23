@@ -62,6 +62,8 @@ class RemoteSyncService {
   Future<void> uploadIssueReport({
     required String report,
     String errorSource = 'manual_report',
+    String? stackTrace,
+    Map<String, dynamic> contextJson = const <String, dynamic>{},
     Uint8List? screenshotBytes,
     String screenshotFileName = 'issue-screenshot.png',
   }) async {
@@ -96,12 +98,13 @@ class RemoteSyncService {
       'device_model': Platform.operatingSystemVersion,
       'error_source': errorSource,
       'error_message': report,
-      'stack_trace': null,
+      'stack_trace': stackTrace,
       'context_json': <String, dynamic>{
         'uploaded_at': DateTime.now().toIso8601String(),
         'mode': 'manual_report',
         'screenshot_path': screenshotPath,
         'screenshot_url': screenshotUrl,
+        ...contextJson,
       },
       'beacon_snapshot_json': beaconSnapshot,
     });

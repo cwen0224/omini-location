@@ -140,6 +140,33 @@
         padding: 20px;
       }
 
+      .report-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 14px;
+      }
+
+      .mini-button {
+        width: auto;
+        min-height: 40px;
+        padding: 0 14px;
+        border-radius: 12px;
+        border: 1px solid var(--line);
+        background: rgba(255, 255, 255, 0.06);
+        color: var(--ink);
+        cursor: pointer;
+        font-weight: 700;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .mini-button:hover {
+        border-color: rgba(95, 182, 255, 0.35);
+      }
+
       .report-top {
         display: flex;
         flex-wrap: wrap;
@@ -202,6 +229,11 @@
         margin-top: 14px;
       }
 
+      .stacktrace {
+        border-color: rgba(255, 184, 108, 0.18);
+        background: rgba(255, 184, 108, 0.05);
+      }
+
       .empty {
         padding: 28px;
         border-radius: 24px;
@@ -262,6 +294,7 @@
       const sourceEl = document.getElementById('source');
       const keywordEl = document.getElementById('keyword');
       const refreshEl = document.getElementById('refresh');
+      let currentRows = [];
 
       function escapeHtml(value) {
         return String(value ?? '')
@@ -276,7 +309,90 @@
         return JSON.stringify(value ?? {}, null, 2);
       }
 
+      function classifyLikelyArea(row) {
+        const haystack = `${row.error_source || ''} ${row.error_message || ''} ${row.stack_trace || ''} ${formatJson(row.context_json || {})}`.toLowerCase();
+
+        if (haystack.includes('screenshot') || haystack.includes('capture') || haystack.includes('renderrepaintboundary')) {
+          return '截圖 / 畫面擷取，優先看 app/lib/core/app_capture_service.dart';
+        }
+
+        if (haystack.includes('release') || haystack.includes('publish') || haystack.includes('version') || haystack.includes('apk') || haystack.includes('github release')) {
+          return '發版 / 版本同步，優先看 app/pubspec.yaml、docs/version.json、build_release.bat、publish_github_release.bat';
+        }
+
+        if (haystack.includes('supabase') || haystack.includes('row level security') || haystack.includes('permission') || haystack.includes('42501') || haystack.includes('rls')) {
+          return 'Supabase 權限 / schema，優先看 supabase/schema.sql';
+        }
+
+        if (haystack.includes('report-viewer') || haystack.includes('.html') || haystack.includes('javascript') || haystack.includes('fetch')) {
+          return '回報頁 / 前端展示，優先看 docs/report-viewer.html';
+        }
+
+        if (haystack.includes('gps') || haystack.includes('location') || haystack.includes('heading') || haystack.includes('imu') || haystack.includes('magnetometer') || haystack.includes('camera')) {
+          return '定位 / 感測器流程，優先看 app/lib/features/ 和 app/lib/core/';
+        }
+
+        return '先依 stack trace 找到最接近的檔案，再決定修正點';
+      }
+
+      function buildRepairBrief(row) {
+        const context = row.context_json || {};
+        const screenshotUrl = context.screenshot_url || '';
+        const likelyArea = classifyLikelyArea(row);
+
+        return [
+          'You are triaging a MerFork app error from Supabase app_errors.',
+          'Do not guess from the message alone. Prioritize stack_trace, then context_json, then beacon_snapshot_json.',
+          '',
+          `App version: ${row.app_version || ''}+${row.build_number || ''}`,
+          `Platform: ${row.platform || ''}`,
+          `Device model: ${row.device_model || ''}`,
+          `Error source: ${row.error_source || ''}`,
+          `Likely area: ${likelyArea}`,
+          `Created at: ${row.created_at || ''}`,
+          '',
+          'Problem summary:',
+          row.error_message || '',
+          '',
+          'Stack trace:',
+          row.stack_trace || '(none provided)',
+          '',
+          'Context JSON:',
+          formatJson(context),
+          '',
+          'Beacon snapshot JSON:',
+          formatJson(row.beacon_snapshot_json || []),
+          '',
+          `Screenshot URL: ${screenshotUrl || '(none provided)'}`,
+          '',
+          'Required output:',
+          '1. Summarize the bug in one sentence.',
+          '2. State the most likely root cause.',
+          '3. List the exact files to inspect in order.',
+          '4. Give the smallest safe fix.',
+          '5. Give verification steps.',
+          '6. If the data is insufficient, say exactly which field is missing.',
+        ].join('\n');
+      }
+
+      async function copyRepairBrief(reportId) {
+        const row = currentRows.find((item) => item.id === reportId);
+        if (!row) {
+          statusEl.textContent = '找不到對應的回報資料。';
+          return;
+        }
+
+        const text = buildRepairBrief(row);
+        try {
+          await navigator.clipboard.writeText(text);
+          statusEl.textContent = `已複製 AI 修復摘要：${row.error_source || reportId}`;
+        } catch (error) {
+          statusEl.textContent = `複製失敗：${error}`;
+        }
+      }
+
       function renderReports(rows) {
+        currentRows = rows;
         if (!rows.length) {
           reportsEl.innerHTML = '<div class="empty">目前沒有符合條件的回報。</div>';
           return;
@@ -288,6 +404,7 @@
           const beaconCount = Array.isArray(row.beacon_snapshot_json)
             ? row.beacon_snapshot_json.length
             : 0;
+          const likelyArea = classifyLikelyArea(row);
 
           return `
             <article class="report-card">
@@ -302,16 +419,29 @@
                   <span>${beaconCount}</span>
                 </div>
                 <div class="kv">
+                  <strong>可能區域</strong>
+                  <span>${escapeHtml(likelyArea)}</span>
+                </div>
+                <div class="kv">
                   <strong>截圖</strong>
                   <span>${screenshotUrl ? `<a href="${escapeHtml(screenshotUrl)}" target="_blank" rel="noreferrer">開啟截圖</a>` : '無'}</span>
                 </div>
               </div>
+              <div class="report-actions">
+                <button class="mini-button" type="button" data-copy-brief="${escapeHtml(row.id)}">複製 AI 修復摘要</button>
+                ${screenshotUrl ? `<a class="mini-button" href="${escapeHtml(screenshotUrl)}" target="_blank" rel="noreferrer">開啟截圖</a>` : ''}
+              </div>
               <pre>${escapeHtml(row.error_message || '')}</pre>
+              ${row.stack_trace ? `<pre class="stacktrace">${escapeHtml(row.stack_trace)}</pre>` : ''}
               <pre>${escapeHtml(formatJson(context))}</pre>
               ${screenshotUrl ? `<img class="screenshot" src="${escapeHtml(screenshotUrl)}" alt="report screenshot" />` : ''}
             </article>
           `;
         }).join('');
+
+        reportsEl.querySelectorAll('[data-copy-brief]').forEach((button) => {
+          button.addEventListener('click', () => copyRepairBrief(button.getAttribute('data-copy-brief')));
+        });
       }
 
       function matchRow(row, source, keyword) {
@@ -338,7 +468,7 @@
         reportsEl.innerHTML = '';
 
         const url = new URL(`${SUPABASE_URL}/rest/v1/app_errors`);
-        url.searchParams.set('select', 'id,created_at,app_version,build_number,platform,device_model,error_source,error_message,context_json,beacon_snapshot_json');
+        url.searchParams.set('select', 'id,created_at,app_version,build_number,platform,device_model,error_source,error_message,stack_trace,context_json,beacon_snapshot_json');
         url.searchParams.set('order', 'created_at.desc');
         url.searchParams.set('limit', String(limit));
 

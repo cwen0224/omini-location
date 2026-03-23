@@ -57,6 +57,8 @@ $copyMap = @(
   @{ Source = 'SETUP_WITH_AI.md'; Target = 'SETUP_WITH_AI.md' },
   @{ Source = 'AI_FOLDER_START.md'; Target = 'AI_FOLDER_START.md' },
   @{ Source = 'WHY_MERFORK.md'; Target = 'WHY_MERFORK.md' },
+  @{ Source = 'ERROR_TRIAGE.md'; Target = 'ERROR_TRIAGE.md' },
+  @{ Source = 'FAILURE_RECOVERY.md'; Target = 'FAILURE_RECOVERY.md' },
   @{ Source = 'gitignore.template'; Target = '.gitignore' },
   @{ Source = 'scripts/bootstrap-new-repo.ps1'; Target = 'scripts/bootstrap-new-repo.ps1' }
 )

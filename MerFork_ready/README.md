@@ -12,6 +12,8 @@
 4. 如果你是 AI，先讀 [`AI_FOLDER_START.md`](./AI_FOLDER_START.md)
 5. 如果你不熟這套系統，先讀 [`SETUP_WITH_AI.md`](./SETUP_WITH_AI.md)
 6. 如果你要知道 MerFork 真正為什麼快，先讀 [`WHY_MERFORK.md`](./WHY_MERFORK.md)
+7. 如果你要把 Supabase 報錯變成修正計畫，先讀 [`ERROR_TRIAGE.md`](./ERROR_TRIAGE.md)
+8. 如果你要處理發版失敗，先讀 [`FAILURE_RECOVERY.md`](./FAILURE_RECOVERY.md)
 
 ## 先用這個腳本
 - 或 [`scripts/bootstrap-new-repo.ps1`](./scripts/bootstrap-new-repo.ps1)

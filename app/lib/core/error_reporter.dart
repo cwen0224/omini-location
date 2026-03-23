@@ -13,6 +13,15 @@ class ErrorReporter {
   static final ValueNotifier<List<ReportEntry>> entries =
       ValueNotifier<List<ReportEntry>>(<ReportEntry>[]);
 
+  static ReportEntry? get latestErrorEntry {
+    for (final entry in entries.value) {
+      if (entry.level == ReportLevel.error) {
+        return entry;
+      }
+    }
+    return null;
+  }
+
   static void install() {
     recordInfo('App bootstrap started');
 

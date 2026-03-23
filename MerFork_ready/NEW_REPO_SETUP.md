@@ -35,6 +35,8 @@
 - GitHub Releases 只負責 APK 交付
 - 手機端可以一鍵更新
 - 發版完成後本機 APK 會自動清掉，避免安裝包堆積
+- Supabase 報錯可以直接進 `ERROR_TRIAGE.md` 變成修正計畫
+- 發版或回報失敗時可以直接照 `FAILURE_RECOVERY.md` 回復
 
 ## 不要這樣做
 - 不要直接在舊 repo 內另起一套完全不同的產品線

@@ -53,3 +53,13 @@
 
 ## 你不需要 BAT 也可以開始
 如果你已經有一個現成資料夾，AI 直接讀 `AI_FOLDER_START.md` 和 `START_HERE.md` 就能開始，不需要先找生成器。
+
+## 如果你已經有報錯資料
+- 先打開 `docs/report-viewer.html`
+- 複製 AI 修復摘要
+- 再把 `ERROR_TRIAGE.md` 裡的流程交給 AI 執行
+
+## 如果你是在修現有專案
+- 先看 `docs/report-viewer.html`
+- 再看 `ERROR_TRIAGE.md`
+- 先從最新一筆 `app_errors` 開始，不要從最舊資料回推

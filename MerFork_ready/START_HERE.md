@@ -8,10 +8,12 @@
 3. 如果你是 AI，先讀 [`AI_FOLDER_START.md`](./AI_FOLDER_START.md)
 4. 如果你不熟這套系統，先讀 [`SETUP_WITH_AI.md`](./SETUP_WITH_AI.md)
 5. 如果你想先理解 MerFork 的價值，先讀 [`WHY_MERFORK.md`](./WHY_MERFORK.md)
-6. 先讀 [`PROJECT_INTAKE.md`](./PROJECT_INTAKE.md)
-7. 讀 [`HANDOFF.md`](./HANDOFF.md)
-8. 讀 [`PROJECT_STRUCTURE.md`](./PROJECT_STRUCTURE.md)
-9. 依照 `INITIAL_CHECKLIST.md` 建立最小可用版本
+6. 如果你要用 Supabase 報錯來修正問題，先讀 [`ERROR_TRIAGE.md`](./ERROR_TRIAGE.md)
+7. 如果你要處理發版失敗，先讀 [`FAILURE_RECOVERY.md`](./FAILURE_RECOVERY.md)
+8. 先讀 [`PROJECT_INTAKE.md`](./PROJECT_INTAKE.md)
+9. 讀 [`HANDOFF.md`](./HANDOFF.md)
+10. 讀 [`PROJECT_STRUCTURE.md`](./PROJECT_STRUCTURE.md)
+11. 依照 `INITIAL_CHECKLIST.md` 建立最小可用版本
 
 ## 核心原則
 - 不要先做大架構重構

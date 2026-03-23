@@ -11,15 +11,21 @@
    - `PROJECT_STRUCTURE.md`
    - `INITIAL_CHECKLIST.md`
    - `WHY_MERFORK.md`
+   - `ERROR_TRIAGE.md`
+   - `FAILURE_RECOVERY.md`
+   - 如果存在 `docs/report-viewer.html`，先開它
 3. 先確認 repo 名稱、發版策略、資料回報策略、open questions
 4. 再看 `scripts/` 和 `docs/` 的內容
 5. 按照文件裡的順序執行，不要自己猜流程
+6. 如果已有 Supabase 報錯，先看 `docs/report-viewer.html` 再讀 `ERROR_TRIAGE.md`
 
 ## 你要先做的判斷
 - 這是不是新的獨立 repo
 - 目前專案目標是什麼
 - 這個專案要不要沿用 MerFork Protocol
 - 哪些資訊還缺，應該回問使用者
+- 如果有 Supabase 報錯，先讀 `ERROR_TRIAGE.md`
+- 如果有發版失敗，先讀 `FAILURE_RECOVERY.md`
 
 ## 如果資料不完整
 - 先用 `PROJECT_INTAKE.md` 裡的 open questions 補齊

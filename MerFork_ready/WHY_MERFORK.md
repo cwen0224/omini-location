@@ -8,6 +8,7 @@ MerFork 的重點不是「又一套發版流程」。
 3. 手機端可以直接從 Pages 看更新，做到一鍵更新
 4. GitHub Releases 只負責 APK 交付
 5. 發版後本機 APK 會自動清掉，工作區保持乾淨
+6. Supabase 的 app_errors 可以直接轉成修正計畫，不用人工猜
 
 ## 對 AI 的要求
 - 先看 `docs/version.json`

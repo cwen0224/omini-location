@@ -58,12 +58,24 @@ class _ReportIssuePageState extends State<ReportIssuePage> {
       _uploading = true;
     });
     try {
+      final latestError = ErrorReporter.latestErrorEntry;
       final capture = AppCaptureService.instance.latestCapture;
       final fileName = capture == null
           ? 'issue-screenshot.png'
           : 'issue-${capture.capturedAt.toIso8601String().replaceAll(':', '-')}.png';
       await RemoteSyncService.instance.uploadIssueReport(
         report: _report,
+        errorSource: latestError?.source ?? 'manual_report',
+        stackTrace: latestError?.stackTrace,
+        contextJson: <String, dynamic>{
+          'report_length': _report.length,
+          'report_captured_at': DateTime.now().toIso8601String(),
+          if (latestError != null) ...<String, dynamic>{
+            'latest_error_source': latestError.source,
+            'latest_error_level': latestError.level.name,
+            'latest_error_message': latestError.message,
+          },
+        },
         screenshotBytes: capture?.bytes,
         screenshotFileName: fileName,
       );
