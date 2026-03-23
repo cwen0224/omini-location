@@ -12,6 +12,7 @@ param(
   [string]$TechStack = '待填',
   [string]$ReleaseStrategy = '待填',
   [string]$DataStrategy = '待填',
+  [string]$OpenQuestions = '待填',
   [string]$UseMerForkProtocol = '待填',
 
   [switch]$InitializeGit
@@ -53,6 +54,7 @@ $copyMap = @(
   @{ Source = 'RELEASE_NOTES.md'; Target = 'RELEASE_NOTES.md' },
   @{ Source = 'KNOWN_ISSUES.md'; Target = 'KNOWN_ISSUES.md' },
   @{ Source = 'NEW_REPO_SETUP.md'; Target = 'NEW_REPO_SETUP.md' },
+  @{ Source = 'SETUP_WITH_AI.md'; Target = 'SETUP_WITH_AI.md' },
   @{ Source = 'create_merfork_project.bat'; Target = 'create_merfork_project.bat' },
   @{ Source = 'gitignore.template'; Target = '.gitignore' },
   @{ Source = 'scripts/bootstrap-new-repo.ps1'; Target = 'scripts/bootstrap-new-repo.ps1' }
@@ -88,6 +90,7 @@ $targetUsersText = Normalize-Field $TargetUsers
 $techStackText = Normalize-Field $TechStack
 $releaseStrategyText = Normalize-Field $ReleaseStrategy
 $dataStrategyText = Normalize-Field $DataStrategy
+$openQuestionsText = Normalize-Field $OpenQuestions
 $useProtocolText = Normalize-Field $UseMerForkProtocol
 $featureLines = Format-ListBlock $CoreFeatures
 
@@ -125,6 +128,9 @@ $intakeLines.Add($releaseStrategyText)
 $intakeLines.Add('')
 $intakeLines.Add('## Data / Report Strategy')
 $intakeLines.Add($dataStrategyText)
+$intakeLines.Add('')
+$intakeLines.Add('## Open Questions / Needs AI Help')
+$intakeLines.Add($openQuestionsText)
 $intakeLines.Add('')
 $intakeLines.Add('## Use MerFork Protocol')
 $intakeLines.Add($useProtocolText)
@@ -168,6 +174,9 @@ $briefLines.Add($releaseStrategyText)
 $briefLines.Add('')
 $briefLines.Add('## Data / Report Strategy')
 $briefLines.Add($dataStrategyText)
+$briefLines.Add('')
+$briefLines.Add('## Open Questions / Needs AI Help')
+$briefLines.Add($openQuestionsText)
 
 Set-Content -Path (Join-Path $TargetRoot 'PROJECT_BRIEF.md') -Value $briefLines.ToArray() -Encoding utf8
 

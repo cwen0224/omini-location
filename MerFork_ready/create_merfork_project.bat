@@ -96,6 +96,9 @@ set /p RELEASE_STRATEGY=Release strategy:
 set "DATA_STRATEGY="
 set /p DATA_STRATEGY=Data / report strategy: 
 
+set "OPEN_QUESTIONS="
+set /p OPEN_QUESTIONS=Open questions / things AI should decide: 
+
 set "USE_PROTOCOL="
 set /p USE_PROTOCOL=Use MerFork Protocol? [Y/N]: 
 
@@ -128,6 +131,7 @@ echo   Core features   : %CORE_FEATURES%
 echo   Tech stack      : %TECH_STACK%
 echo   Release strategy: %RELEASE_STRATEGY%
 echo   Data strategy   : %DATA_STRATEGY%
+echo   Open questions  : %OPEN_QUESTIONS%
 echo   MerFork Protocol: %USE_PROTOCOL%
 echo   Initialize git  : %INIT_GIT%
 echo.
@@ -138,7 +142,7 @@ if /I not "%PROCEED%"=="Y" (
   exit /b 1
 )
 
-powershell -NoProfile -ExecutionPolicy Bypass -File "%PS1%" -TargetRoot "%TARGET_ROOT%" -ProjectName "%PROJECT_TITLE%" -RepositoryName "%REPO_NAME%" -RepositoryUrl "%REPO_URL%" -RepositoryVisibility "%REPO_VISIBILITY%" -ProjectGoal "%PROJECT_GOAL%" -TargetUsers "%TARGET_USERS%" -CoreFeatures "%CORE_FEATURES%" -TechStack "%TECH_STACK%" -ReleaseStrategy "%RELEASE_STRATEGY%" -DataStrategy "%DATA_STRATEGY%" -UseMerForkProtocol "%USE_PROTOCOL%" %INIT_GIT_FLAG%
+powershell -NoProfile -ExecutionPolicy Bypass -File "%PS1%" -TargetRoot "%TARGET_ROOT%" -ProjectName "%PROJECT_TITLE%" -RepositoryName "%REPO_NAME%" -RepositoryUrl "%REPO_URL%" -RepositoryVisibility "%REPO_VISIBILITY%" -ProjectGoal "%PROJECT_GOAL%" -TargetUsers "%TARGET_USERS%" -CoreFeatures "%CORE_FEATURES%" -TechStack "%TECH_STACK%" -ReleaseStrategy "%RELEASE_STRATEGY%" -DataStrategy "%DATA_STRATEGY%" -OpenQuestions "%OPEN_QUESTIONS%" -UseMerForkProtocol "%USE_PROTOCOL%" %INIT_GIT_FLAG%
 if errorlevel 1 exit /b 1
 
 echo.

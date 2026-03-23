@@ -31,6 +31,7 @@
 - 技術棧
 - 發版策略
 - 資料 / 回報策略
+- 哪些部分要 AI 幫忙決定
 - 是否採用 MerFork Protocol
 
 ## MerFork Protocol

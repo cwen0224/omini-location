@@ -5,10 +5,11 @@
 ## 你現在要做的事
 1. 先確認這是不是新專案
 2. 先建立一個新的 GitHub repo，將新專案和主專案分離
-3. 先讀 [`PROJECT_INTAKE.md`](./PROJECT_INTAKE.md)（如果已經由 BAT 收集過資料）
-4. 讀 [`HANDOFF.md`](./HANDOFF.md)
-5. 讀 [`PROJECT_STRUCTURE.md`](./PROJECT_STRUCTURE.md)
-6. 依照 `INITIAL_CHECKLIST.md` 建立最小可用版本
+3. 如果你不熟這套系統，先讀 [`SETUP_WITH_AI.md`](./SETUP_WITH_AI.md)
+4. 先讀 [`PROJECT_INTAKE.md`](./PROJECT_INTAKE.md)（如果已經由 BAT 收集過資料）
+5. 讀 [`HANDOFF.md`](./HANDOFF.md)
+6. 讀 [`PROJECT_STRUCTURE.md`](./PROJECT_STRUCTURE.md)
+7. 依照 `INITIAL_CHECKLIST.md` 建立最小可用版本
 
 ## 核心原則
 - 不要先做大架構重構
