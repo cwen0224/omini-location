@@ -37,6 +37,12 @@
 ## MerFork Protocol
 如果這個新專案也要沿用我們現在這套更新方式，就把整條流程叫做 `MerFork Protocol`。
 
+MerFork 的核心優勢是：
+- 版本資訊和下載頁放在 GitHub Pages，Codex 改完就能快速更新
+- GitHub Releases 只負責 APK 交付
+- 手機端可以從 Pages 一鍵取得新版
+- 發版後本機 APK 會自動清掉，避免工作區堆滿安裝包
+
 流程至少要包含：
 - 本機 build
 - 版本號同步

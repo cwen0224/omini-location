@@ -10,6 +10,7 @@
 2. [`HANDOFF.md`](./HANDOFF.md)
 3. [`PROJECT_STRUCTURE.md`](./PROJECT_STRUCTURE.md)
 4. 如果你不熟這套系統，先讀 [`SETUP_WITH_AI.md`](./SETUP_WITH_AI.md)
+5. 如果你要知道 MerFork 真正為什麼快，先讀 [`WHY_MERFORK.md`](./WHY_MERFORK.md)
 
 ## 先用這個腳本
 - [`create_merfork_project.bat`](./create_merfork_project.bat)

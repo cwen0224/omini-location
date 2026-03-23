@@ -48,6 +48,12 @@ BAT 會先問你：
 - 讓 AI 幫你填完那些你不確定的欄位
 - 你只要提供你知道的部分，其他留給 AI 建議
 
+## MerFork 的關鍵優勢
+- GitHub Pages 放下載頁與版本資訊，Codex 改完就能快速更新
+- GitHub Releases 只負責 APK 交付
+- 手機端可以一鍵更新
+- 發版完成後本機 APK 會自動清掉，避免安裝包堆積
+
 ## 不要這樣做
 - 不要直接在舊 repo 內另起一套完全不同的產品線
 - 不要共用同一份 `version.json` 或 release asset 規則

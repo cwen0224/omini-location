@@ -103,7 +103,13 @@ if errorlevel 1 (
   if errorlevel 1 exit /b 1
 )
 
+if exist "%APK_PATH%" (
+  del /f /q "%APK_PATH%"
+)
+
 echo.
 echo Release published:
 echo https://github.com/cwen0224/omini-location/releases/tag/%TAG%
+echo Local APK cleaned:
+echo %APK_PATH%
 exit /b 0
