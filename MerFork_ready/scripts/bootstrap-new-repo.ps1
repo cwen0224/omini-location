@@ -55,8 +55,8 @@ $copyMap = @(
   @{ Source = 'KNOWN_ISSUES.md'; Target = 'KNOWN_ISSUES.md' },
   @{ Source = 'NEW_REPO_SETUP.md'; Target = 'NEW_REPO_SETUP.md' },
   @{ Source = 'SETUP_WITH_AI.md'; Target = 'SETUP_WITH_AI.md' },
+  @{ Source = 'AI_FOLDER_START.md'; Target = 'AI_FOLDER_START.md' },
   @{ Source = 'WHY_MERFORK.md'; Target = 'WHY_MERFORK.md' },
-  @{ Source = 'create_merfork_project.bat'; Target = 'create_merfork_project.bat' },
   @{ Source = 'gitignore.template'; Target = '.gitignore' },
   @{ Source = 'scripts/bootstrap-new-repo.ps1'; Target = 'scripts/bootstrap-new-repo.ps1' }
 )

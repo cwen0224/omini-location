@@ -17,31 +17,13 @@
 7. 把新 repo 的網址寫回文件
 
 ## 建議啟動方式
-雙擊根目錄的 `create_merfork_project.bat`，或用 PowerShell 直接呼叫：
+如果你已經有一個新 repo 資料夾，AI 可以直接打開資料夾開始接手，不需要先跑任何生成器。
+
+如果你是人類要建立新 repo，可用 PowerShell 直接呼叫：
 
 ```powershell
 .\scripts\bootstrap-new-repo.ps1 -TargetRoot "C:\path\to\new-repo" -InitializeGit
 ```
-
-BAT 會先問你：
-1. 新專案名稱
-2. 父資料夾路徑
-3. Repo 名稱
-4. Repo URL
-5. Repo visibility
-6. 專案目標
-7. 目標使用者
-8. 核心功能
-9. 技術棧
-10. 發版策略
-11. 資料 / 回報策略
-12. 哪些地方需要 AI 幫你決定
-13. 是否採用 MerFork Protocol
-14. 是否初始化 git
-
-最後會自動建立 `父資料夾\專案名稱` 這個目錄。
-如果專案名稱含空格，BAT 會自動把空格轉成 `-`；如果含 Windows 不允許的路徑字元，也會一併正規化成安全名稱。
-它也會先列出一個摘要，讓你確認這些資訊沒有填錯再真的建立。
 
 ## 如果你不熟這套系統
 - 先打開 `SETUP_WITH_AI.md`

@@ -5,11 +5,11 @@
 
 ## 你要做的事
 1. 先建立一個新的 GitHub repo
-2. 下載或複製 `MerFork_ready/` 到你的工作目錄
-3. 雙擊 `create_merfork_project.bat`
+2. 把 `MerFork_ready/` 複製到你的工作目錄，或直接在現成資料夾裡打開它
+3. 如果已經有 AI 在協助，直接打開 `AI_FOLDER_START.md`
 4. 把你知道的資訊填進去
 5. 不知道的地方，讓 AI 幫你決定
-6. 看摘要，確認沒有填錯，再生成新專案
+6. 看摘要，確認沒有填錯，再開始執行
 
 ## 你可以交給 AI 的工作
 - 幫你判斷 repo 名稱
@@ -20,6 +20,7 @@
 - 幫你決定 release strategy
 - 幫你決定 data / report strategy
 - 幫你整理 open questions
+- 幫你決定哪些欄位需要先問使用者，哪些可以先用保守預設值
 
 ## 你可以直接對 AI 說
 > 我現在要建立一個新的 MerFork ready 專案，但我不熟這套系統。  
@@ -49,3 +50,6 @@
 - `INITIAL_CHECKLIST.md`
 
 如果你還沒填完，先讓 AI 幫你補，不要直接跳去改程式。
+
+## 你不需要 BAT 也可以開始
+如果你已經有一個現成資料夾，AI 直接讀 `AI_FOLDER_START.md` 和 `START_HERE.md` 就能開始，不需要先找生成器。

@@ -1,6 +1,9 @@
 @echo off
 setlocal EnableExtensions
 
+rem Optional local helper for humans.
+rem MerFork's standard flow is now folder-first: AI reads the docs directly.
+
 set "SCRIPT_DIR=%~dp0"
 set "PS1=%SCRIPT_DIR%scripts\bootstrap-new-repo.ps1"
 
