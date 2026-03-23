@@ -10,6 +10,7 @@
 - GitHub Pages 下載頁更新
 - Supabase 問題回報與查看頁
 - 新專案模板入口：`MerFork_ready/`
+- 若開新的人魚專案，請建立獨立 GitHub repo，不要在主 repo 內混做
 
 接手者若在文件、聊天室或 commit 中看到 `MerFork Protocol`，一律視為這整條更新鏈，不要拆成零散步驟理解。
 
