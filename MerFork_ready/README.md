@@ -13,7 +13,9 @@
 ## 先用這個腳本
 - [`create_merfork_project.bat`](./create_merfork_project.bat)
 - 或 [`scripts/bootstrap-new-repo.ps1`](./scripts/bootstrap-new-repo.ps1)
+- 它會先問使用者必要資訊，包含 repo 層級資訊、產品目標、技術棧與發版策略
 - 它可以把這個模板複製到你指定的新 repo 根目錄，並可選擇直接初始化 git
+- 它會生成 `PROJECT_INTAKE.md` 與填好的 `PROJECT_BRIEF.md`，讓下一位 AI 直接接手
 
 ## 這個資料夾的使用方式
 - 把新專案的產品目標、技術選型、發版策略先寫進來

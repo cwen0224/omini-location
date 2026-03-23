@@ -13,11 +13,25 @@
 - 是否需要版本檢查與自動更新
 
 ## 建議先建立的文件
+- `PROJECT_INTAKE.md`
 - `PROJECT_BRIEF.md`
 - `PROJECT_STRUCTURE.md`
 - `INITIAL_CHECKLIST.md`
 - `RELEASE_NOTES.md`
 - `KNOWN_ISSUES.md`
+
+## 建議先收集的資訊
+- 新專案名稱
+- 獨立 GitHub repo 名稱
+- repo URL
+- repo visibility
+- 專案目標
+- 目標使用者
+- 核心功能
+- 技術棧
+- 發版策略
+- 資料 / 回報策略
+- 是否採用 MerFork Protocol
 
 ## MerFork Protocol
 如果這個新專案也要沿用我們現在這套更新方式，就把整條流程叫做 `MerFork Protocol`。

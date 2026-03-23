@@ -10,6 +10,7 @@ MerFork_ready/
   HANDOFF.md
   PROJECT_STRUCTURE.md
   INITIAL_CHECKLIST.md
+  PROJECT_INTAKE.md
   PROJECT_BRIEF.md
   RELEASE_NOTES.md
   KNOWN_ISSUES.md
@@ -22,6 +23,7 @@ MerFork_ready/
 
 ## 每個檔案的用途
 - `PROJECT_BRIEF.md`：專案目標、範圍、非目標
+- `PROJECT_INTAKE.md`：起案時從使用者收集的必要資訊
 - `INITIAL_CHECKLIST.md`：新專案啟動檢查清單
 - `RELEASE_NOTES.md`：版本與更新紀錄
 - `KNOWN_ISSUES.md`：已知問題與風險
